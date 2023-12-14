@@ -2,7 +2,7 @@
 
 #define NAME intmap_t
 #define KEY_TY uint32_t
-#define VAL_TY int
+#define VAL_TY uint32_t
 #define HASH_FN udb_hash_fn
 #define CMPR_FN vt_cmpr_integer
 #include "verstable.h"
