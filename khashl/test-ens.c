@@ -5,7 +5,7 @@
 #define KH_SUB_N     (1<<KH_SUB_SHIFT)
 #define KH_SUB_MASK  (KH_SUB_N - 1)
 
-KHASHL_MAP_INIT(, intmap_t, intmap, uint32_t, uint32_t, udb_hash_fn, kh_eq_generic)
+KHASHL_MAP_INIT(KH_LOCAL, intmap_t, intmap, uint32_t, uint32_t, udb_hash_fn, kh_eq_generic)
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {
@@ -23,7 +23,7 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 			x = udb_hash32(x);
 			uint32_t key = udb_get_key(n, x);
 			g = h[key & KH_SUB_MASK];
-			k = intmap_put(g, key>>KH_SUB_SHIFT, &absent);
+			k = intmap_put(g, key, &absent);
 			if (is_del) {
 				if (absent) kh_val(g, k) = i, ++z;
 				else intmap_del(g, k);
