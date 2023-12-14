@@ -14,7 +14,7 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 			khint_t k;
 			int absent;
 			x = udb_hash32(x);
-			k = intmap_put(h, udb_get_key(N, x), &absent);
+			k = intmap_put(h, udb_get_key(n, x), &absent);
 			if (is_del) {
 				if (absent) ++z;
 				else intmap_del(h, k);

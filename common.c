@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 	int c;
 	double t0, t_keygen;
 	uint64_t sum;
-	uint32_t i, n_cp = 6, N = 60000000, n0 = 10000000, x0 = 1, is_del = 0;
+	uint32_t i, n_cp = 11, N = 70000000, n0 = 10000000, x0 = 1, is_del = 0;
 	udb_checkpoint_t cp0, *cp;
 
 	while ((c = getopt(argc, argv, "n:N:0:k:d")) >= 0) {
@@ -131,7 +131,8 @@ int main(int argc, char *argv[])
 		double t, m;
 		t = (cp[i].t - cp0.t - t_keygen * cp[i].n_input / N) / cp[i].n_input * 1e6;
 		m = (cp[i].mem - cp0.mem) / cp[i].table_size;
-		printf("M%c\t%d\t%.3f\t%.3f\t%.4f\t%.2f\n", is_del? 'D' : 'I', cp[i].n_input, cp[i].t - cp0.t, (cp[i].mem - cp0.mem) * 1e-6, t, m);
+		printf("M%c\t%d\t%d\t%lx\t%.3f\t%.3f\t%.4f\t%.2f\n", is_del? 'D' : 'I', cp[i].n_input, cp[i].table_size, (long)cp[i].checksum,
+			cp[i].t - cp0.t, (cp[i].mem - cp0.mem) * 1e-6, t, m);
 	}
 	free(cp);
 	return 0;
