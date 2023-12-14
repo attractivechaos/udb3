@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 	int c;
 	double t0, t_keygen;
 	uint64_t sum;
-	uint32_t i, n_cp = 11, N = 70000000, n0 = 10000000, x0 = 1, is_del = 0;
+	uint32_t i, n_cp = 11, N = 80000000, n0 = 10000000, x0 = 1, is_del = 0;
 	udb_checkpoint_t cp0, *cp;
 
 	while ((c = getopt(argc, argv, "n:N:0:k:d")) >= 0) {
