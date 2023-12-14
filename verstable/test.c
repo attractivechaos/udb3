@@ -19,12 +19,13 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 			x = udb_hash32(x);
 			uint32_t key = udb_get_key(n, x);
 			size_t ori_size = intmap_t_size(&h);
-			intmap_t_itr itr = intmap_t_get_or_insert(&h, key, 0);
 			if (is_del) {
+				intmap_t_itr itr = intmap_t_get_or_insert(&h, key, i);
 				if (intmap_t_size(&h) == ori_size)
 					intmap_t_erase_itr(&h, itr);
 				else ++z;
 			} else {
+				intmap_t_itr itr = intmap_t_get_or_insert(&h, key, 0);
 				z += ++itr.data->val;
 			}
 		}

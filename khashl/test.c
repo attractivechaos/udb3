@@ -1,7 +1,7 @@
 #include "../common.c"
 #include "khashl.h"
 
-KHASHL_MAP_INIT(, intmap_t, intmap, uint32_t, int, udb_hash_fn, kh_eq_generic)
+KHASHL_MAP_INIT(, intmap_t, intmap, uint32_t, uint32_t, udb_hash_fn, kh_eq_generic)
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {
@@ -19,7 +19,7 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 				if (absent) ++z;
 				else intmap_del(h, k);
 			} else {
-				if (absent) kh_val(h, k) = 0;
+				if (absent) kh_val(h, k) = i;
 				z += ++kh_val(h, k);
 			}
 		}
