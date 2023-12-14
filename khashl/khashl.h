@@ -128,7 +128,7 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 	} \
 	SCOPE void prefix##_clear(HType *h) { \
 		if (h && h->used) { \
-			uint32_t n_buckets = 1U << h->bits; \
+			khint_t n_buckets = (khint_t)1U << h->bits; \
 			memset(h->used, 0, __kh_fsize(n_buckets) * sizeof(khint32_t)); \
 			h->count = 0; \
 		} \
@@ -138,7 +138,7 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 	SCOPE khint_t prefix##_getp_core(const HType *h, const khkey_t *key, khint_t hash) { \
 		khint_t i, last, n_buckets, mask; \
 		if (h->keys == 0) return 0; \
-		n_buckets = 1U << h->bits; \
+		n_buckets = (khint_t)1U << h->bits; \
 		mask = n_buckets - 1U; \
 		i = last = __kh_h2b(hash, h->bits); \
 		while (__kh_used(h->used, i) && !__hash_eq(h->keys[i], *key)) { \
@@ -157,12 +157,12 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 		while ((x >>= 1) != 0) ++j; \
 		if (new_n_buckets & (new_n_buckets - 1)) ++j; \
 		new_bits = j > 2? j : 2; \
-		new_n_buckets = 1U << new_bits; \
+		new_n_buckets = (khint_t)1U << new_bits; \
 		if (h->count > (new_n_buckets>>1) + (new_n_buckets>>2)) return 0; /* requested size is too small */ \
 		new_used = (khint32_t*)kmalloc(__kh_fsize(new_n_buckets) * sizeof(khint32_t)); \
 		memset(new_used, 0, __kh_fsize(new_n_buckets) * sizeof(khint32_t)); \
 		if (!new_used) return -1; /* not enough memory */ \
-		n_buckets = h->keys? 1U<<h->bits : 0U; \
+		n_buckets = h->keys? (khint_t)1U<<h->bits : 0U; \
 		if (n_buckets < new_n_buckets) { /* expand */ \
 			khkey_t *new_keys = (khkey_t*)krealloc((void*)h->keys, new_n_buckets * sizeof(khkey_t)); \
 			if (!new_keys) { kfree(new_used); return -1; } \
@@ -198,12 +198,12 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 #define __KHASHL_IMPL_PUT(SCOPE, HType, prefix, khkey_t, __hash_fn, __hash_eq) \
 	SCOPE khint_t prefix##_putp_core(HType *h, const khkey_t *key, khint_t hash, int *absent) { \
 		khint_t n_buckets, i, last, mask; \
-		n_buckets = h->keys? 1U<<h->bits : 0U; \
+		n_buckets = h->keys? (khint_t)1U<<h->bits : 0U; \
 		*absent = -1; \
 		if (h->count >= (n_buckets>>1) + (n_buckets>>2)) { /* rehashing */ \
 			if (prefix##_resize(h, n_buckets + 1U) < 0) \
 				return n_buckets; \
-			n_buckets = 1U<<h->bits; \
+			n_buckets = (khint_t)1U<<h->bits; \
 		} /* TODO: to implement automatically shrinking; resize() already support shrinking */ \
 		mask = n_buckets - 1; \
 		i = last = __kh_h2b(hash, h->bits); \
@@ -226,7 +226,7 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 	SCOPE int prefix##_del(HType *h, khint_t i) { \
 		khint_t j = i, k, mask, n_buckets; \
 		if (h->keys == 0) return 0; \
-		n_buckets = 1U<<h->bits; \
+		n_buckets = (khint_t)1U<<h->bits; \
 		mask = n_buckets - 1U; \
 		while (1) { \
 			j = (j + 1U) & mask; \
