@@ -1,8 +1,6 @@
 #include "../common.c"
 #include <functional>
 
-// https://github.com/martinus/robin-hood-hashing
-// cloned on 2023-12-12
 #include <boost/unordered/unordered_flat_map.hpp>
 
 #define KH_SUB_SHIFT 6
