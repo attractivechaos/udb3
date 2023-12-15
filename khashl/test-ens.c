@@ -22,7 +22,7 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 			int absent;
 			x = udb_hash32(x);
 			uint32_t key = udb_get_key(n, x);
-			g = h[key & KH_SUB_MASK];
+			g = h[udb_hash_fn(key) & KH_SUB_MASK];
 			k = intmap_put(g, key, &absent);
 			if (is_del) {
 				if (absent) kh_val(g, k) = i, ++z;
