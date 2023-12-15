@@ -256,6 +256,10 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
  * Ensemble of hash tables *
  ***************************/
 
+typedef struct {
+	khint_t sub, pos;
+} kh_ensitr_t;
+
 #define KHASHE_INIT(SCOPE, HType, prefix, khkey_t, __hash_fn, __hash_eq) \
 	KHASHL_INIT(KH_LOCAL, HType##_sub, prefix##_sub, khkey_t, __hash_fn, __hash_eq) \
 	typedef struct HType { \
@@ -275,32 +279,37 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 		for (t = 0; t < 1<<g->bits; ++t) { kfree((void*)g->sub[t].keys); kfree(g->sub[t].used); } \
 		kfree(g->sub); kfree(g); \
 	} \
-	SCOPE khint64_t prefix##_getp(const HType *g, const khkey_t *key) { \
+	SCOPE kh_ensitr_t prefix##_getp(const HType *g, const khkey_t *key) { \
 		khint_t hash, low, ret; \
+		kh_ensitr_t r; \
 		HType##_sub *h; \
 		hash = __hash_fn(*key); \
 		low = hash & ((1U<<g->bits) - 1); \
 		h = &g->sub[low]; \
 		ret = prefix##_sub_getp_core(h, key, hash); \
-		return ret == 1U<<h->bits? (khint64_t)-1 : (khint64_t)ret<<g->bits | low; \
+		if (ret == 1U<<h->bits) r.sub = low, r.pos = (khint_t)-1; \
+		else r.sub = low, r.pos = ret; \
+		return r; \
 	} \
-	SCOPE khint64_t prefix##_get(const HType *g, const khkey_t key) { return prefix##_getp(g, &key); } \
-	SCOPE khint64_t prefix##_putp(HType *g, const khkey_t *key, int *absent) { \
+	SCOPE kh_ensitr_t prefix##_get(const HType *g, const khkey_t key) { return prefix##_getp(g, &key); } \
+	SCOPE kh_ensitr_t prefix##_putp(HType *g, const khkey_t *key, int *absent) { \
 		khint_t hash, low, ret; \
+		kh_ensitr_t r; \
 		HType##_sub *h; \
 		hash = __hash_fn(*key); \
 		low = hash & ((1U<<g->bits) - 1); \
 		h = &g->sub[low]; \
 		ret = prefix##_sub_putp_core(h, key, hash, absent); \
 		if (*absent) ++g->count; \
-		return ret == 1U<<h->bits? (khint64_t)-1 : (khint64_t)ret<<g->bits | low; \
+		if (ret == 1U<<h->bits) r.sub = low, r.pos = (khint_t)-1; \
+		else r.sub = low, r.pos = ret; \
+		return r; \
 	} \
-	SCOPE khint64_t prefix##_put(HType *g, const khkey_t key, int *absent) { return prefix##_putp(g, &key, absent); } \
-	SCOPE int prefix##_del(HType *g, khint64_t itr) { \
-		khint_t i = itr >> g->bits, low = itr & ((1U<<g->bits) - 1); \
-		HType##_sub *h = &g->sub[low]; \
+	SCOPE kh_ensitr_t prefix##_put(HType *g, const khkey_t key, int *absent) { return prefix##_putp(g, &key, absent); } \
+	SCOPE int prefix##_del(HType *g, kh_ensitr_t itr) { \
+		HType##_sub *h = &g->sub[itr.sub]; \
 		int ret; \
-		ret = prefix##_sub_del(h, i); \
+		ret = prefix##_sub_del(h, itr.pos); \
 		if (ret) --g->count; \
 		return ret; \
 	}
@@ -362,9 +371,9 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 	KHASHE_INIT(KH_LOCAL, HType, prefix##_m, HType##_m_bucket_t, prefix##_m_hash, prefix##_m_eq) \
 	SCOPE HType *prefix##_init(int bits) { return prefix##_m_init(bits); } \
 	SCOPE void prefix##_destroy(HType *h) { prefix##_m_destroy(h); } \
-	SCOPE khint_t prefix##_get(const HType *h, khkey_t key) { HType##_m_bucket_t t; t.key = key; return prefix##_m_getp(h, &t); } \
-	SCOPE int prefix##_del(HType *h, khint_t k) { return prefix##_m_del(h, k); } \
-	SCOPE khint_t prefix##_put(HType *h, khkey_t key, int *absent) { HType##_m_bucket_t t; t.key = key; return prefix##_m_putp(h, &t, absent); }
+	SCOPE kh_ensitr_t prefix##_get(const HType *h, khkey_t key) { HType##_m_bucket_t t; t.key = key; return prefix##_m_getp(h, &t); } \
+	SCOPE int prefix##_del(HType *h, kh_ensitr_t k) { return prefix##_m_del(h, k); } \
+	SCOPE kh_ensitr_t prefix##_put(HType *h, khkey_t key, int *absent) { HType##_m_bucket_t t; t.key = key; return prefix##_m_putp(h, &t, absent); }
 
 /**************************
  * Public macro functions *
@@ -379,13 +388,10 @@ static kh_inline khint_t __kh_h2b(khint_t hash, khint_t bits) { return hash * 26
 #define kh_val(h, x) ((h)->keys[x].val)
 #define kh_exist(h, x) __kh_used((h)->used, (x))
 
-#define __kh_ens_sub(g, x) (&(g)->sub[(x) & ((1U<<(g)->bits)-1)])
-#define __kh_ens_pos(g, x) ((x)>>(g)->bits)
-
-#define kh_ens_key(g, x) kh_key(__kh_ens_sub(g, x), __kh_ens_pos(g, x))
-#define kh_ens_val(g, x) kh_val(__kh_ens_sub(g, x), __kh_ens_pos(g, x))
-#define kh_ens_exist(g, x) kh_exist(__kh_ens_sub(g, x), __kh_ens_pos(g, x))
-#define kh_ens_end(g) ((khint64_t)-1)
+#define kh_ens_key(g, x) kh_key(&(g)->sub[(x).sub], (x).pos)
+#define kh_ens_val(g, x) kh_val(&(g)->sub[(x).sub], (x).pos)
+#define kh_ens_exist(g, x) kh_exist(&(g)->sub[(x).sub], (x).pos)
+#define kh_ens_is_end(x) ((x).pos == (khint_t)-1)
 #define kh_ens_size(g) ((g)->count)
 
 /**************************************
