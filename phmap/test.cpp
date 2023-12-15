@@ -13,7 +13,7 @@ struct Hash32 {
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {
-	phmap::flat_hash_map<uint32_t, uint32_t, Hash32> h;
+	phmap::parallel_flat_hash_map<uint32_t, uint32_t, Hash32> h;
 	uint32_t step = (N - n0) / (n_cp - 1);
 	uint32_t i, x, n, j;
 	uint64_t z = 0;
