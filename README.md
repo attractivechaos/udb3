@@ -15,6 +15,6 @@ the average memory per entry in the table, and plot them.
 The following figure shows the results measured on an M1 MacBook Pro in
 December, 2023.
 
-<img align="left" src="__logs/231216-M1.svg"/>
+<img align="left" src="__logs/231216-M1.png"/>
 
 **Rationale.** 
