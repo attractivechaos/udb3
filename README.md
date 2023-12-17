@@ -91,9 +91,10 @@ applications.
 This benchmark only evaluates small key-value pairs because I only use small
 keys in huge hash tables. The performance of large key-value pairs may be
 different. In addition, this benchmark mixes different hash table operations
-incluyding insertion of new entries, query of existing entries and deletions.
+including insertion of new entries, query of existing entries and deletions.
 Depending on the frequency of each type of operation, the results may look
-different, too.
+different, too. Hash table evaluation is complicated. Developers interested in
+hash table performances are recommended to read other benchmarks as well.
 
 [lf]: https://en.wikipedia.org/wiki/Hash_table#Load_factor
 [ensemble]: https://greg7mdp.github.io/parallel-hashmap/
