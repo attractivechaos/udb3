@@ -62,14 +62,12 @@ Among the implementations without ensembles
 memory on the deletion workload. Built on top of [`absl::flat_hash_map`][absl],
 [`phmap::flat_hash_map`][phmap] is impressive on performance.
 [`robin_hood::unordered_map`][rh] is a good choice if you need a small, fast and
-portable hash table library. Although the developer of robin-hood-hashing
-recommends his [`ankerl::unordered_dense`][ud], it is slower and uses more
-memory on this benchmark (see below). [`ska::bytell_hash_map`][ska] is a worthy
-mention even though it has not been updated since 2018.
+portable hash table library. [`ska::bytell_hash_map`][ska] is a worthy mention
+even though it has not been updated since 2018.
 
-Among hash table libraries in C, [verstable][vt] gets a solid recommendation
-from me. [M\*LIB][mlib] is fast on insertion but does not perform well on
-deletion. I developed [khashl][khashl].
+Among hash table libraries in C, [verstable][vt] is fast, light and convenient
+to use. It easily gets a recommendation from me. [M\*LIB][mlib] is fast on
+insertion but does not perform well on deletion. I developed [khashl][khashl].
 
 ### On other hash table libraries
 
@@ -80,11 +78,13 @@ below shows several other popular libraries.
 
 We can see that `std::unordered_map` and [uthash][uthash] are times slower and
 use more memory. They should be avoided if hash table operations are a
-bottlebeck. As I mentioned above, [`ankerl::unordered_dense`][ud] does not
-perform well. Its relative performance to other portable libraries also vary
-greatly, from 20% slower to >100% slower than robin-hood-hashing, on different
-CPUs I have access to. As such, if you want to use unordered\_dense, I
-recommend to compare it to other libraries on your specific applications.
+bottlebeck. The developer of robin-hood-hashing now recommends
+[`ankerl::unordered_dense`][ud]. However, this new library does not perform
+well on this benchmark. In addition, its relative performance to
+robin-hood-hashing also varies greatly, from 20% slower to >100% slower, on
+different CPUs I have access to. If you want to use unordered\_dense in your
+production code, I recommend to compare it to other libraries on your specific
+applications.
 
 [lf]: https://en.wikipedia.org/wiki/Hash_table#Load_factor
 [ensemble]: https://greg7mdp.github.io/parallel-hashmap/
