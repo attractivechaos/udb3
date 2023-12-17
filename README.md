@@ -2,6 +2,9 @@
 
 This is the third version of Unordered Dictionary Benchmark (udb3). It
 evaluates the performance of several popular hash table libraries in C or C++.
+Results first; explanations later:
+
+<img align="left" src="__logs/231216-M1.png"/>
 
 ### The tasks
 
@@ -32,8 +35,9 @@ will see the speed-memory tradeoff of a library.
 
 ### Ensemble of hash tables
 
-A hash table can be implemented with an ensemble of smaller hash tables.
-Suppose there are `n` sub-tables. A key `x` is located in sub-table `hash(x) %
+This benchmark involves three implementations with an ensemble of hash tables,
+which may need a clarification here. Suppose a hash table consists of `n`
+smaller sub hash tables. A key `x` is located in sub-table `hash(x) %
 n`. Because it is rare for all sub-tables to rehash at the same time, the peak
 memory can be reduced. You can find more explanation in [this blog][ensemble].
 In my opinion, **using an ensemble of hash tables it the best strategy for huge
@@ -47,11 +51,9 @@ recently integrated the ensemble idea into my [khashl.h][khashl] as well.
 
 ## Results
 
-The following figure shows the results measured on an M1 MacBook Pro in
+The figure above shows the results measured on an M1 MacBook Pro in
 December, 2023. Roughly speaking, a hash table library is represented by a
 cloud of points. The relative positions of clouds inform their performance.
-
-<img align="left" src="__logs/231216-M1.png"/>
 
 In the figure, `boost ensemble`, which implements an ensemble of hash tables in
 the user code, is the fastest implementation using comparable memory to others. It is
