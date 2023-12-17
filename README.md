@@ -12,8 +12,8 @@ table in the end. **The second task evaluates both insertions and deletions**.
 The input is the same 80 million integers. We insert an integer to the hash
 table if it is not in the table already, or delete it if present. There are 9.2
 million integers left in the table. For both tasks, we record CPU time and peak
-memory at 11 checkpoints, reports the average CPU time per million inputs and
-the average memory per entry in the table, and plot them.
+memory at 11 checkpoints and report the average CPU time per million inputs and
+the average memory per entry in the table.
 
 ### The rationale behind the design
 
@@ -22,7 +22,9 @@ factor][lf] threshold but this comes at a cost of memory. Controlling the
 threshold would not give us a complete picture, either, because the optimal
 threshold of a library depends on its implementation details and even at the
 same load factor threshold, some libraries may use more auxiliary data than
-others and thus take more memory. In this benchmark, we **measure the speed and
+others and thus take more memory.
+
+In this benchmark, we **measure the speed and
 the memory at the same time**. If library *A* is faster and uses less memory than
 *B*, *A* will be better no matter how we tune the load factor of *B*. If *A* is
 faster but uses more memory, we cannot draw a firm conclusion but at least we
@@ -52,7 +54,7 @@ cloud of points. The relative positions of clouds inform their performance.
 <img align="left" src="__logs/231216-M1.png"/>
 
 In the figure, `boost ensemble`, which implements an ensemble of hash tables in
-the user code, is the fastest library using comparable memory to others. It is
+the user code, is the fastest implementation using comparable memory to others. It is
 **the clear winner in this benchmark**. `khashl ensemble` uses the least amount of
 memory perhaps because it uses `realloc` and only doubles the memory during
 rehashing; other libraries need to triple the memory.
@@ -65,7 +67,7 @@ memory on the deletion workload. Built on top of [`absl::flat_hash_map`][absl],
 portable hash table library. [`ska::bytell_hash_map`][ska] is a worthy mention
 even though it has not been updated since 2018.
 
-Among hash table libraries in C, [verstable][vt] is fast, light and convenient
+Among hash table libraries in C, [verstable][vt] is fast, lightweight and convenient
 to use. It easily gets a recommendation from me. [M\*LIB][mlib] is fast on
 insertion but does not perform well on deletion. I developed [khashl][khashl].
 
