@@ -86,6 +86,15 @@ different CPUs I have access to. If you want to use unordered\_dense in your
 production code, I recommend to compare it to other libraries on your specific
 applications.
 
+## Concluding remarks
+
+This benchmark only evaluates small key-value pairs because I only use small
+keys in huge hash tables. The performance of large key-value pairs may be
+different. In addition, this benchmark mixes different hash table operations
+incluyding insertion of new entries, query of existing entries and deletions.
+Depending on the frequency of each type of operation, the results may look
+different, too.
+
 [lf]: https://en.wikipedia.org/wiki/Hash_table#Load_factor
 [ensemble]: https://greg7mdp.github.io/parallel-hashmap/
 [phmap]: https://github.com/greg7mdp/parallel-hashmap
