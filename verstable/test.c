@@ -1,9 +1,14 @@
 #include "../common.c"
 
+static inline uint64_t verstable_hash_fn(uint32_t key)
+{
+	return key * 0x9ddfea08eb382d69ull;
+}
+
 #define NAME intmap_t
 #define KEY_TY uint32_t
 #define VAL_TY uint32_t
-#define HASH_FN udb_hash_fn
+#define HASH_FN verstable_hash_fn
 #define CMPR_FN vt_cmpr_integer
 #include "verstable.h"
 
