@@ -4,7 +4,7 @@ This is the third version of Unordered Dictionary Benchmark (udb3). It
 evaluates the performance of several popular hash table libraries in C or C++.
 Results first; explanations later:
 
-<img align="left" src="https://i.ibb.co/ctfztBB/240506-M1.png?240506v3"/>
+<img align="left" src="https://i.ibb.co/64nbn8k/240506-fast.png?v4"/>
 
 ### The tasks
 
@@ -62,7 +62,7 @@ insertion but does not perform well on deletion. I developed [khashl][khashl].
 The figure above focuses on high-performance hash table libraries. The figure
 below shows several other popular libraries.
 
-<img align="left" src="https://i.ibb.co/gFRtNXR/240506-M1a.png?240506"/>
+<img align="left" src="https://i.ibb.co/BPmT54b/240506-slow.png?v4"/>
 
 We can see that `std::unordered_map` in clang and [uthash][uthash] are times slower and
 use more memory. They should be avoided if you need a fast hash table.
