@@ -33,22 +33,6 @@ the memory at the same time**. If library *A* is faster and uses less memory tha
 faster but uses more memory, we cannot draw a firm conclusion but at least we
 will see the speed-memory tradeoff of a library.
 
-### Ensemble of hash tables
-
-This benchmark involves three implementations with an ensemble of hash tables,
-which may need a clarification here. Suppose a hash table consists of `n`
-smaller sub hash tables. A key `x` is located in sub-table `hash(x) %
-n`. Because it is rare for all sub-tables to rehash at the same time, the peak
-memory can be reduced. You can find more explanation in [this blog][ensemble].
-In my opinion, **using an ensemble of hash tables it the best strategy for huge
-hash tables**.
-
-We can implement a hash table ensemble in the user space for any libraries. I
-have been using the idea since 2015. Nonetheless, it is more convenient to
-hide the details behind the library code such that users can use familiar hash
-table APIs. [phmap][phmap] is perhaps the first library to do this. I have
-recently integrated the ensemble idea into my [khashl.h][khashl] as well.
-
 ## Results
 
 The figure above shows the results measured on an M1 MacBook Pro in
@@ -101,8 +85,6 @@ is hard. Developers interested in hash table performances are recommended to
 read other benchmarks such as [this][bench1] and [this][bench2].
 
 [lf]: https://en.wikipedia.org/wiki/Hash_table#Load_factor
-[ensemble]: https://greg7mdp.github.io/parallel-hashmap/
-[phmap]: https://github.com/greg7mdp/parallel-hashmap
 [khashl]: https://github.com/attractivechaos/klib/blob/master/khashl.h
 [boost]: http://bannalia.blogspot.com/2022/11/inside-boostunorderedflatmap.html
 [absl]: https://abseil.io/docs/cpp/guides/container
