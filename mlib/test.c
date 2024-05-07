@@ -11,7 +11,7 @@ static inline void oor_set(uint32_t *k, unsigned char n)
 	*k = (uint32_t)(-n-1);
 }
 
-DICT_OA_DEF2(intmap, uint32_t, M_OPEXTEND(M_BASIC_OPLIST, OOR_EQUAL(oor_equal_p), OOR_SET(API_2(oor_set))), uint32_t, M_BASIC_OPLIST)
+DICT_OA_DEF2(intmap, uint32_t, M_OPEXTEND(M_BASIC_OPLIST, HASH(udb_hash_fn), OOR_EQUAL(oor_equal_p), OOR_SET(API_2(oor_set))), uint32_t, M_BASIC_OPLIST)
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {
