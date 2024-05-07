@@ -4,7 +4,7 @@ This is the third version of Unordered Dictionary Benchmark (udb3). It
 evaluates the performance of several popular hash table libraries in C or C++.
 Results first; explanations later:
 
-<img align="left" src="https://i.ibb.co/vVFHvQj/240506-M1.png?240506"/>
+<img align="left" src="https://i.ibb.co/0ctMnC4/240506-M1.png?240506v2"/>
 
 ### The tasks
 
