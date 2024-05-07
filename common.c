@@ -47,20 +47,28 @@ static void udb_measure(uint32_t n_input, uint32_t table_size, uint64_t checksum
  * Key generation *
  ******************/
 
-static inline uint32_t udb_hash32(uint32_t key)
+uint64_t udb_splitmix64(uint64_t *x)
 {
-    key += ~(key << 15);
-    key ^=  (key >> 10);
-    key +=  (key << 3);
-    key ^=  (key >> 6);
-    key += ~(key << 11);
-    key ^=  (key >> 16);
-    return key;
+	uint64_t z = ((*x) += 0x9e3779b97f4a7c15ULL);
+	z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;
+	z = (z ^ (z >> 27)) * 0x94d049bb133111ebULL;
+	return z ^ (z >> 31);
 }
 
-static inline uint32_t udb_get_key(const uint32_t n, const uint32_t x)
+static inline uint64_t udb_hash_fn(uint32_t z)
 {
-	return udb_hash32(x % (n>>2));
+	uint64_t x = z;
+	x ^= x >> 30;
+	x *= 0xbf58476d1ce4e5b9ULL;
+	x ^= x >> 27;
+	x *= 0x94d049bb133111ebULL;
+	x ^= x >> 31;
+	return x;
+}
+
+static inline uint32_t udb_get_key(const uint32_t n, const uint64_t y)
+{
+	return (uint32_t)(y % (n>>2));
 }
 
 /**********************************************
@@ -69,22 +77,13 @@ static inline uint32_t udb_get_key(const uint32_t n, const uint32_t x)
 
 uint64_t udb_traverse_rng(uint32_t n, uint32_t x0)
 {
-	uint64_t sum = 0;
-	uint32_t i, x;
-	for (i = 0, x = x0; i < n; ++i) {
-		x = udb_hash32(x);
-		sum += udb_get_key(n, x);
+	uint64_t sum = 0, x = x0;
+	uint32_t i;
+	for (i = 0; i < n; ++i) {
+		uint64_t y = udb_splitmix64(&x);
+		sum += udb_get_key(n, y);
 	}
 	return sum;
-}
-
-/*****************************************************
- * This is the hash function used by almost everyone *
- *****************************************************/
-
-static inline uint32_t udb_hash_fn(uint32_t key)
-{
-	return key;
 }
 
 /*****************

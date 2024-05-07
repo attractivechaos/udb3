@@ -1,7 +1,7 @@
 /*
  * M*LIB - TUPLE module
  *
- * Copyright (c) 2017-2023, Patrick Pelissier
+ * Copyright (c) 2017-2024, Patrick Pelissier
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -750,7 +750,7 @@ namespace m_lib {
    SET(M_F(name,_set)),                                                       \
    CLEAR(M_F(name, _clear)),                                                  \
    NAME(name),                                                                \
-   TYPE(M_F(name,_ct)),                                                       \
+   TYPE(M_F(name,_ct)), GENTYPE(struct M_F(name,_s)*),                        \
    OPLIST( (__VA_ARGS__) ),                                                   \
    M_IF_METHOD_ALL(CMP, __VA_ARGS__)(CMP(M_F(name, _cmp)),),                  \
    M_IF_METHOD_ALL(HASH, __VA_ARGS__)(HASH(M_F(name, _hash)),),               \

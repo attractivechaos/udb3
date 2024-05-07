@@ -1,7 +1,7 @@
 /*
  * M*LIB - Extended Pre-processing macros module
  *
- * Copyright (c) 2017-2023, Patrick Pelissier
+ * Copyright (c) 2017-2024, Patrick Pelissier
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -71,7 +71,7 @@
 /* Define M*LIB version */
 #define M_CORE_VERSION_MAJOR 0
 #define M_CORE_VERSION_MINOR 7
-#define M_CORE_VERSION_PATCHLEVEL 1
+#define M_CORE_VERSION_PATCHLEVEL 3
 
 /* M_ASSUME is equivalent to M_ASSERT, but gives hints to compiler
    about how to optimize the code if NDEBUG is defined.
@@ -88,7 +88,7 @@
 # define M_ASSUME(x) M_ASSERT(x)
 #endif
 
-/* M_LIKELY / M_UNLIKELY gives hints on the compiler of the likehood
+/* M_LIKELY / M_UNLIKELY gives hints on the compiler of the likelihood
    of the given condition */
 #ifdef __GNUC__
 # define M_LIKELY(cond)   __builtin_expect(!!(cond), 1)
@@ -153,7 +153,7 @@
  * and CLANG failed to realize it.
  * See https://bugs.llvm.org//show_bug.cgi?id=22712
  *
- * * A manualy created buffer is given to fscanf. It is needed
+ * * A manually created buffer is given to fscanf. It is needed
  * to give the size of the array of char to fscanf (this is the safe way).
  */
 #if defined(__clang__) && defined(__cplusplus)
@@ -396,7 +396,7 @@ M_BEGIN_PROTECTED_CODE
 
 /* Define the default assertion macro used by M*LIB.
  * By default, it is an encapsulation of CLIB assert.
- * NOTE: Can be overiden by user if it needs to keep finer access 
+ * NOTE: Can be overriden by user if it needs to keep finer access 
  * on the assertions.
  */
 #ifndef M_ASSERT
@@ -404,9 +404,9 @@ M_BEGIN_PROTECTED_CODE
 #endif
 
 
-/* If within the M*LIB tests, perform additional (potentialy slow) checks
+/* If within the M*LIB tests, perform additional (potentially slow) checks
  * By default, it is an encapsulation of CLIB assert for M*LIB own tests.
- * NOTE: Can be overiden by user if it needs to keep finer access 
+ * NOTE: Can be overriden by user if it needs to keep finer access 
  * on the assertions.
  */
 #ifndef M_ASSERT_SLOW
@@ -419,7 +419,7 @@ M_BEGIN_PROTECTED_CODE
 
 
 /* Always perform a runtime check of the given condition
- * NOTE: Can be overiden by user if it needs to keep finer access 
+ * NOTE: Can be overriden by user if it needs to keep finer access 
  * on the assertions or display message on another device.
  */
 #ifndef M_ASSERT_INIT
@@ -434,7 +434,7 @@ M_BEGIN_PROTECTED_CODE
 /* Define an assertion check on an index, compared to its maximum.
  * The index is supposed to be unsigned.
  * It is only used to valid user input, not an intermediary calculus.
- * NOTE: Can be overiden by user if it needs to keep access under control
+ * NOTE: Can be overriden by user if it needs to keep access under control
  * even on release mode
  * NOTE: (index)-(index) is used to represent 0, but to avoid spurious
  * warning by the compiler on "comparaison is always true" for unsigned
@@ -449,12 +449,12 @@ M_BEGIN_PROTECTED_CODE
 
 /* Terminate the compilation of the current unit with an error message.
    The error parameter is a C token which classifies the error
-   with an optional message detailling the error.
+   with an optional message detailing the error.
    It is not an expression and shall not be used in an expression.
    It shall be used outside of a function, therefore it is not an expression.
    In C99, it uses a bitfield to be compatible with most compilers
    (so that it properly displays 'error' on the command line
-   Quite usefull to terminate with a proper error message rather than
+   Quite useful to terminate with a proper error message rather than
    a garbage of error due to incorrect code generation in the methods
    expansion.
  */
@@ -467,7 +467,7 @@ M_BEGIN_PROTECTED_CODE
 
 /* Test at compile time if the given condition is true.
    The error parameter is a C token which classifies the error
-   with an optional message detailling the error.
+   with an optional message detailing the error.
    In C99, it uses a bitfield to be compatible with most compilers
    (so that it properly displays 'error' on the command line
    C11 static Assert is not usable in expression,
@@ -476,7 +476,7 @@ M_BEGIN_PROTECTED_CODE
    compute its size and cast it to void.
    NOTE: Some implementation claims to be C11 (default mode) but fails
    to deliver a working assert.h with static_assert so we test for the
-   explicity precense of the macro static_assert.
+   explicitly presence of the macro static_assert.
 */
 #ifdef __cplusplus
 # define M_STATIC_ASSERT(cond, error, msg)                                    \
@@ -518,13 +518,13 @@ M_BEGIN_PROTECTED_CODE
 
 
 /* Generation of function name by concatenation
-   Can be ovverrided by user
+   Can be overriden by user
 */
 #ifndef M_F
 #define M_F(a, b)            M_C2I(a, b)
 #endif
 
-/* Concatenation of function name that enable developer to use customizaton
+/* Concatenation of function name that enable developer to use customization
    developer shall provide its own name customization by forcing M_F to it
    then provide its own suffix in the namespace M_OVERRIDE_ ## suffix ():
    Each generated suffix shall start with a comma.
@@ -760,7 +760,7 @@ M_BEGIN_PROTECTED_CODE
 #define M_ADDI_52(n) M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(M_INC(n))))))))))))))))))))))))))))))))))))))))))))))))))))
 
 
-/* Substract two integers with both integers from [0 to M_MAX_NB_ARGUMENT[
+/* Subtract two integers with both integers from [0 to M_MAX_NB_ARGUMENT[
    Generated by:
    for i in $(seq 0 52) ; do printf "#define M_SUBI_%d(n) " $i ; for j in $(seq 1 $i) ; do printf "M_DEC(";done ; printf "n" ; for j in $(seq 1 $i) ; do printf ")" ;done ; printf "\n" ; done */
 #define M_SUB(x,y)  M_C(M_SUBI_, y)(x)
@@ -903,7 +903,7 @@ M_BEGIN_PROTECTED_CODE
 /* Return the nth argument of a VA_ARGS.
     - M_RET_ARG<n> lets the VA_ARGS been evaluated, and returns the <n> argument.
     - M_RETI_ARG<n> returns the <n> argument.
-    - M_RET_ARG takes n as argument, evaluate the arguments, and returns the 'n' argument.
+    - M_RET_ARG takes 'n' as argument, evaluate the arguments, and returns the 'n' argument.
   NOTE: A comma is added at the end in M_RET_ARG<n> in order to avoid error if the number of
   argument is exactly <n> (in which case, otherwise the __VA_ARGS__ will be non existent).
    Generated by:
@@ -1158,6 +1158,12 @@ M_BEGIN_PROTECTED_CODE
 #define M_TRIPLE_2(a,b,c) b
 #define M_TRIPLE_3(a,b,c) c
 
+/* Same for quad */
+#define M_QUAD_1(a,b,c,d) a
+#define M_QUAD_2(a,b,c,d) b
+#define M_QUAD_3(a,b,c,d) c
+#define M_QUAD_4(a,b,c,d) d
+
 /* Skip the Nth first arguments of a VA_ARGS
    Generated by:
    for i in $(seq 0 52) ; do printf "#define M_SKIPI_%d(" $i ; for j in $(seq 1 $i) ; do printf "_%d, " $j ; done ; printf "...) __VA_ARGS__\n"; done
@@ -1392,7 +1398,7 @@ M_BEGIN_PROTECTED_CODE
 #define M_IF_EMPTY(...)             M_IF(M_EMPTY_P(__VA_ARGS__))
 
 
-/* Concatene the two preprocessing token.
+/* Concatenate the two preprocessing token.
  * Handle the case where the second argument is empty, in which case
  * it returns the first token without concatenation.
  */
@@ -1452,7 +1458,10 @@ M_BEGIN_PROTECTED_CODE
 #define M_PATTERN_type_type ,
 #define M_PATTERN_TYPE_TYPE ,
 #define M_PATTERN_SUBTYPE_SUBTYPE ,
+#define M_PATTERN_SUBTYPE_PTR_SUBTYPE_PTR ,
 #define M_PATTERN_IT_TYPE_IT_TYPE ,
+#define M_PATTERN_KEY_TYPE_KEY_TYPE ,
+#define M_PATTERN_VALUE_TYPE_VALUE_TYPE ,
 #define M_PATTERN_M_UNDERFLOW_M_UNDERFLOW ,
 #define M_PATTERN_M_OVERFLOW_M_OVERFLOW ,
 #define M_PATTERN_M_OVERFLOW_M_OVERFLOW ,
@@ -1488,7 +1497,7 @@ M_BEGIN_PROTECTED_CODE
 #define M_EAT_KEYWORD____(...)              __VA_ARGS__
 
 
-/* Necessary macros to handle recursivity,
+/* Necessary macros to handle recursion,
    delaying the evaluation by one (or more) level of macro expansion.
    The argument is a macro-function which has to be deferred */
 #define M_DELAY0()
@@ -1506,7 +1515,7 @@ M_BEGIN_PROTECTED_CODE
    forcing the pre-processor to expand the given macro a lot of times. 
    NOTE: There can be only one EVAL macro per complete macro-evaluation pass.
    As such the given macro cannot contain M_EVAL itself,
-   NOTE: Using recursivity impacts compilation time performance.
+   NOTE: Using recursion impacts compilation time performance.
 */
 #define M_EVAL(...)                 M_EVAL1(M_EVAL1(M_EVAL1(__VA_ARGS__)))
 #define M_EVAL1(...)                M_EVAL2(M_EVAL2(M_EVAL2(__VA_ARGS__)))
@@ -1525,7 +1534,7 @@ M_BEGIN_PROTECTED_CODE
 
 
 /* MAP: apply the given macro to all arguments.
-   NOTE: Perform a first step evalution so that the given VA_ARGS is fullu evaluated
+   NOTE: Perform a first step evaluation so that the given VA_ARGS is fully evaluated
    and expanded before further preprocessing. This helps if the argument given to M_MAP
    perform a construction of the VA_ARGS as its argument.
    NOTE: It is a non recursive version that is much faster than the recursive one.
@@ -1732,6 +1741,7 @@ M_BEGIN_PROTECTED_CODE
 #define M_MAP2B_74(f, d, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, _61, _62, _63, _64, _65, _66, _67, _68, _69, _70, _71, _72, _73, _74) f(d, _1) f(d, _2) f(d, _3) f(d, _4) f(d, _5) f(d, _6) f(d, _7) f(d, _8) f(d, _9) f(d, _10) f(d, _11) f(d, _12) f(d, _13) f(d, _14) f(d, _15) f(d, _16) f(d, _17) f(d, _18) f(d, _19) f(d, _20) f(d, _21) f(d, _22) f(d, _23) f(d, _24) f(d, _25) f(d, _26) f(d, _27) f(d, _28) f(d, _29) f(d, _30) f(d, _31) f(d, _32) f(d, _33) f(d, _34) f(d, _35) f(d, _36) f(d, _37) f(d, _38) f(d, _39) f(d, _40) f(d, _41) f(d, _42) f(d, _43) f(d, _44) f(d, _45) f(d, _46) f(d, _47) f(d, _48) f(d, _49) f(d, _50) f(d, _51) f(d, _52) f(d, _53) f(d, _54) f(d, _55) f(d, _56) f(d, _57) f(d, _58) f(d, _59) f(d, _60) f(d, _61) f(d, _62) f(d, _63) f(d, _64) f(d, _65) f(d, _66) f(d, _67) f(d, _68) f(d, _69) f(d, _70) f(d, _71) f(d, _72) f(d, _73) f(d, _74) 
 #define M_MAP2B_75(f, d, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, _61, _62, _63, _64, _65, _66, _67, _68, _69, _70, _71, _72, _73, _74, _75) f(d, _1) f(d, _2) f(d, _3) f(d, _4) f(d, _5) f(d, _6) f(d, _7) f(d, _8) f(d, _9) f(d, _10) f(d, _11) f(d, _12) f(d, _13) f(d, _14) f(d, _15) f(d, _16) f(d, _17) f(d, _18) f(d, _19) f(d, _20) f(d, _21) f(d, _22) f(d, _23) f(d, _24) f(d, _25) f(d, _26) f(d, _27) f(d, _28) f(d, _29) f(d, _30) f(d, _31) f(d, _32) f(d, _33) f(d, _34) f(d, _35) f(d, _36) f(d, _37) f(d, _38) f(d, _39) f(d, _40) f(d, _41) f(d, _42) f(d, _43) f(d, _44) f(d, _45) f(d, _46) f(d, _47) f(d, _48) f(d, _49) f(d, _50) f(d, _51) f(d, _52) f(d, _53) f(d, _54) f(d, _55) f(d, _56) f(d, _57) f(d, _58) f(d, _59) f(d, _60) f(d, _61) f(d, _62) f(d, _63) f(d, _64) f(d, _65) f(d, _66) f(d, _67) f(d, _68) f(d, _69) f(d, _70) f(d, _71) f(d, _72) f(d, _73) f(d, _74) f(d, _75) 
 
+
 /* Map a macro to all given arguments with two additional fixed data (non recursive version):
    one of the parameter is given and one numerical which is the argument number.
   Example:
@@ -1793,15 +1803,6 @@ M_BEGIN_PROTECTED_CODE
 #define M_MAP3I_50(f, d, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50) f(d, 1, _1) f(d, 2, _2) f(d, 3, _3) f(d, 4, _4) f(d, 5, _5) f(d, 6, _6) f(d, 7, _7) f(d, 8, _8) f(d, 9, _9) f(d, 10, _10) f(d, 11, _11) f(d, 12, _12) f(d, 13, _13) f(d, 14, _14) f(d, 15, _15) f(d, 16, _16) f(d, 17, _17) f(d, 18, _18) f(d, 19, _19) f(d, 20, _20) f(d, 21, _21) f(d, 22, _22) f(d, 23, _23) f(d, 24, _24) f(d, 25, _25) f(d, 26, _26) f(d, 27, _27) f(d, 28, _28) f(d, 29, _29) f(d, 30, _30) f(d, 31, _31) f(d, 32, _32) f(d, 33, _33) f(d, 34, _34) f(d, 35, _35) f(d, 36, _36) f(d, 37, _37) f(d, 38, _38) f(d, 39, _39) f(d, 40, _40) f(d, 41, _41) f(d, 42, _42) f(d, 43, _43) f(d, 44, _44) f(d, 45, _45) f(d, 46, _46) f(d, 47, _47) f(d, 48, _48) f(d, 49, _49) f(d, 50, _50) 
 #define M_MAP3I_51(f, d, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51) f(d, 1, _1) f(d, 2, _2) f(d, 3, _3) f(d, 4, _4) f(d, 5, _5) f(d, 6, _6) f(d, 7, _7) f(d, 8, _8) f(d, 9, _9) f(d, 10, _10) f(d, 11, _11) f(d, 12, _12) f(d, 13, _13) f(d, 14, _14) f(d, 15, _15) f(d, 16, _16) f(d, 17, _17) f(d, 18, _18) f(d, 19, _19) f(d, 20, _20) f(d, 21, _21) f(d, 22, _22) f(d, 23, _23) f(d, 24, _24) f(d, 25, _25) f(d, 26, _26) f(d, 27, _27) f(d, 28, _28) f(d, 29, _29) f(d, 30, _30) f(d, 31, _31) f(d, 32, _32) f(d, 33, _33) f(d, 34, _34) f(d, 35, _35) f(d, 36, _36) f(d, 37, _37) f(d, 38, _38) f(d, 39, _39) f(d, 40, _40) f(d, 41, _41) f(d, 42, _42) f(d, 43, _43) f(d, 44, _44) f(d, 45, _45) f(d, 46, _46) f(d, 47, _47) f(d, 48, _48) f(d, 49, _49) f(d, 50, _50) f(d, 51, _51) 
 #define M_MAP3I_52(f, d, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52) f(d, 1, _1) f(d, 2, _2) f(d, 3, _3) f(d, 4, _4) f(d, 5, _5) f(d, 6, _6) f(d, 7, _7) f(d, 8, _8) f(d, 9, _9) f(d, 10, _10) f(d, 11, _11) f(d, 12, _12) f(d, 13, _13) f(d, 14, _14) f(d, 15, _15) f(d, 16, _16) f(d, 17, _17) f(d, 18, _18) f(d, 19, _19) f(d, 20, _20) f(d, 21, _21) f(d, 22, _22) f(d, 23, _23) f(d, 24, _24) f(d, 25, _25) f(d, 26, _26) f(d, 27, _27) f(d, 28, _28) f(d, 29, _29) f(d, 30, _30) f(d, 31, _31) f(d, 32, _32) f(d, 33, _33) f(d, 34, _34) f(d, 35, _35) f(d, 36, _36) f(d, 37, _37) f(d, 38, _38) f(d, 39, _39) f(d, 40, _40) f(d, 41, _41) f(d, 42, _42) f(d, 43, _43) f(d, 44, _44) f(d, 45, _45) f(d, 46, _46) f(d, 47, _47) f(d, 48, _48) f(d, 49, _49) f(d, 50, _50) f(d, 51, _51) f(d, 52, _52) 
-
-
-
-/* Map a macro to all given pair of arguments (Using recursivity) (OBSOLETE) */
-/* Example: M_MAP_PAIR(f, a, b, c, d) ==> f(a,b) f(c,d) */
-#define M_MAP_PAIR_L0_INDIRECT()      M_MAP_PAIR_L0
-#define M_MAP_PAIR_L0(f, ...)         M_IF_NARGS_EQ2(__VA_ARGS__)( f(__VA_ARGS__) , M_MAP_PAIR_L1(f, __VA_ARGS__))
-#define M_MAP_PAIR_L1(f, a, b, ...)   f(a,b) M_DELAY3(M_MAP_PAIR_L0_INDIRECT) () (f, __VA_ARGS__)
-#define M_MAP_PAIR(f, ...)            M_IF_EMPTY(__VA_ARGS__)( /* end */, M_EVAL(M_MAP_PAIR_L0(f, __VA_ARGS__)))
 
 
 /* Map a macro to all given arguments and reduce all theses computation
@@ -2305,13 +2306,14 @@ done
 #define M_CROSSI_MAP2_51b(f, d, blist, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, a33, a34, a35, a36, a37, a38, a39, a40, a41, a42, a43, a44, a45, a46, a47, a48, a49, a50, a51) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a1), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a2), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a3), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a4), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a5), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a6), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a7), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a8), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a9), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a10), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a11), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a12), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a13), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a14), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a15), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a16), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a17), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a18), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a19), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a20), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a21), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a22), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a23), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a24), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a25), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a26), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a27), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a28), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a29), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a30), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a31), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a32), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a33), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a34), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a35), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a36), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a37), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a38), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a39), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a40), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a41), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a42), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a43), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a44), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a45), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a46), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a47), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a48), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a49), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a50), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a51), M_ID blist) 
 #define M_CROSSI_MAP2_52(...) M_CROSSI_MAP2_52b(__VA_ARGS__)
 #define M_CROSSI_MAP2_52b(f, d, blist, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31, a32, a33, a34, a35, a36, a37, a38, a39, a40, a41, a42, a43, a44, a45, a46, a47, a48, a49, a50, a51, a52) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a1), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a2), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a3), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a4), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a5), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a6), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a7), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a8), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a9), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a10), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a11), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a12), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a13), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a14), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a15), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a16), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a17), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a18), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a19), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a20), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a21), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a22), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a23), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a24), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a25), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a26), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a27), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a28), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a29), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a30), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a31), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a32), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a33), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a34), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a35), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a36), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a37), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a38), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a39), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a40), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a41), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a42), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a43), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a44), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a45), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a46), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a47), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a48), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a49), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a50), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a51), M_ID blist) M_MAP2(M_CROSSI_MAP2_F_A, (f, d, a52), M_ID blist) 
+
 /* Wrapper function that unpacks the argument to call the real macro with the right arguments */
 #define M_CROSSI_MAP2_F_A(d, b)         M_CROSSI_MAP2_F_B(M_ID d, b)
 #define M_CROSSI_MAP2_F_B(...)          M_CROSSI_MAP2_F_C(__VA_ARGS__)
 #define M_CROSSI_MAP2_F_C(f, d, a1, b1) f(d, a1, b1)
 
 
-/* Sequence of numerical
+/* Sequence of numbers
    Example:
     M_SEQ(init,end)==>init, init+1, ...end
     M_MAP(f, M_SEQ(init, end)) ==> f(init) f(init+1) .... f(end)
@@ -2359,10 +2361,11 @@ done
 /* Return the tail sublist of the sublist of the VA_ARGS (removing the 3 first elements) */
 #define M_TAIL_3(x, y, z, ...) __VA_ARGS__
 
-/* Concatene two arglists 'a' and 'b',
+
+/* Concatenate two arglists 'a' and 'b',
    handling the case of empty arglist
    handling the cases where the arguments are not arglist.
-   and returning an arglist within parenthesis if it concats.
+   Always return an arglist within parenthesis if it concatenates
    (internal macro)
 */
 #define M_CAT_ARGLIST(a, b)                                                   \
@@ -2447,7 +2450,7 @@ done
 #define M_ID(...)                 __VA_ARGS__
 
 
-/* Globber the input */
+/* Remove the input from preprocessing evaluation */
 #define M_EAT(...)
 
 
@@ -2468,9 +2471,9 @@ done
 #define M_IF_NARGS_EQ2(...)           M_IF(M_EQUAL(M_NARGS(__VA_ARGS__), 2))
 
 
-/* If NDEBUG macro is defined
-        M_IF_DEBUG(code if NDEBUG is not defined)
-   Note: not 100% robust */
+/* If NDEBUG macro is not defined, expand code
+   USAGE: M_IF_DEBUG(code if NDEBUG is not defined)
+   Note: not 100% robust but sufficient for its usage */
 #define M_TEST_NDEBUG_P()           M_C3(M_, NDEBUG, _TEST)
 #define M_NDEBUG_TEST               0
 #define M_IF_DEBUG(a)               M_IF(M_TEST_NDEBUG_P())(,a)
@@ -2479,7 +2482,7 @@ done
 /* If the Function Object is included, expands the code,
    otherwise do nothing.
    M_FUNC0BJ_IS_NOT_DEFINED is defined to 0.
-   NOTE: M_IF is the variable is not defined assummes yes.
+   NOTE: M_IF is the variable is not defined assumes yes.
 */
 #define M_IF_FUNCOBJ(a)             M_IF(M_FUNC0BJ_IS_NOT_DEFINED)( ,a)
 
@@ -2629,15 +2632,6 @@ m_core_fopen(const char filename[], const char opt[])
 /* Can be overloaded by m-string to support string output too */
 #define M_CORE_PRINTF_ARG(x) x
 
-/* Print a C variable if it is a standard type (or extension) to stdout
-  If a variable is extended (i.e. like (x, type) ) it will use the 
-  method associated to the OUT_STR operator.
-*/
-#define M_PRINT_ARG(x)                                                        \
-  M_IF(M_PARENTHESIS_P(x))                                                    \
-    ( M_FPRINT_ARG_OUT_STR(stdout, M_PAIR_2 x, M_PAIR_1 x),                   \
-    printf(M_PRINTF_FORMAT(x), M_CORE_PRINTF_ARG(x) ) )
-
 /* Print a C variable if it is a standard type to the given file 'f'.
   If a variable is extended (i.e. like (x, type) ) it will use the 
   method associated to the OUT_STR operator.
@@ -2680,7 +2674,7 @@ m_core_fscan_bool (bool *ptr, FILE *f)
 {
   int c = fgetc(f);
   *ptr = (c == '1');
-  return (c == '0' || c == '1');
+  return (c == '0') || (c == '1');
 }
 
 M_INLINE bool
@@ -2812,7 +2806,7 @@ M_PARSE_DEFAULT_TYPE_DEF(m_core_parse_ldouble, long double, strtold, )
 
 /* Generic PRINT macro: print all its inputs regardless of the type
    provided it is a generic "non-struct" type. */
-#define M_PRINT(...)   do { M_REDUCE(M_PRINT_ARG, M_SEPARATE_PER_SEMICOLON, __VA_ARGS__); } while (0)
+#define M_PRINT(...)   do { M_REDUCE2(M_FPRINT_ARG, M_SEPARATE_PER_SEMICOLON, stdout, __VA_ARGS__); } while (0)
 
 /* Generic FPRINT macro: print all its inputs regardless of the type
    provided it is a generic "non-struct" type into the file 'f'. */
@@ -2827,20 +2821,6 @@ M_PARSE_DEFAULT_TYPE_DEF(m_core_parse_ldouble, long double, strtold, )
    NOTE: Not compatible with C++.
 */
 #define M_AS_TYPE(type, x) _Generic(((void)0,(x)), type: (x), default: (type) {0})
-
-/* Perform a C conditional operator with the following restriction:
- * - cond shall be a compile time constant.
- * However, true_expr and false_expr can be objects of different types.
- * The type of the returned expression will be the same as the
- * returned object without any promotion.
- * NOTE: The classic conditional operator can return different types
- * if and only both objects are pointers. If the selected pointer is
- * a null pointer constant, the returned type depends if the **other**
- * expression is itself a null pointer constant or not.
- * NOTE: Not compatible with C++.
- */
-#define M_CONDITIONAL(cond, true_expr, false_expr)                            \
-  _Generic(1 ? (float *) 0 : (void *)(intptr_t) (cond),  float *: false_expr, void *: true_expr)
 
 /* Return the minimum between x and y (computed in compile time) */
 #define M_MIN(x, y) ((x) < (y) ? (x) : (y))
@@ -2884,7 +2864,7 @@ M_PARSE_DEFAULT_TYPE_DEF(m_core_parse_ldouble, long double, strtold, )
 */
 #ifndef __cplusplus
 # define M_CONST_CAST(type, n)                                                \
-  (((union { type *ptr; type const *cptr; }){n}).cptr)
+  (((union { type *ptr; type const *cptr; }){ .ptr = n}).cptr)
 #else
 # define M_CONST_CAST(type, n)                  const_cast<type*>(n)
 #endif
@@ -3370,6 +3350,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_TYPE_TYPE(a)           ,a,
 #define M_SUBTYPE_SUBTYPE(a)     ,a,
 #define M_GENTYPE_GENTYPE(a)     ,a,
+#define M_SUBTYPE_PTR_SUBTYPE_PTR(a) ,a,
 #define M_NAME_NAME(a)           ,a,
 #define M_OPLIST_OPLIST(a)       ,a,
 #define M_SORT_SORT(a)           ,a,
@@ -3448,77 +3429,77 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 /* Get the given method */
 #define M_GET_INIT(...)      M_GET_METHOD(INIT,        M_INIT_DEFAULT,     __VA_ARGS__)
 #define M_GET_INIT_SET(...)  M_GET_METHOD(INIT_SET,    M_SET_DEFAULT,      __VA_ARGS__)
-#define M_GET_INIT_MOVE(...) M_GET_METHOD(INIT_MOVE,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_INIT_WITH(...) M_GET_METHOD(INIT_WITH,   M_NO_DEFAULT,       __VA_ARGS__)
+#define M_GET_INIT_MOVE(...) M_GET_METHOD(INIT_MOVE,   M_NO_DEF_INIT_MOVE, __VA_ARGS__)
+#define M_GET_INIT_WITH(...) M_GET_METHOD(INIT_WITH,   M_NO_DEF_INIT_WITH, __VA_ARGS__)
 #define M_GET_SET(...)       M_GET_METHOD(SET,         M_SET_DEFAULT,      __VA_ARGS__)
-#define M_GET_MOVE(...)      M_GET_METHOD(MOVE,        M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_SWAP(...)      M_GET_METHOD(SWAP,        M_NO_DEFAULT,       __VA_ARGS__)
+#define M_GET_MOVE(...)      M_GET_METHOD(MOVE,        M_NO_DEF_MOVE,      __VA_ARGS__)
+#define M_GET_SWAP(...)      M_GET_METHOD(SWAP,        M_NO_DEF_SWAP,      __VA_ARGS__)
 #define M_GET_CLEAR(...)     M_GET_METHOD(CLEAR,       M_NOTHING_DEFAULT,  __VA_ARGS__)
-#define M_GET_HASH(...)      M_GET_METHOD(HASH,        M_NO_DEFAULT,       __VA_ARGS__)
+#define M_GET_HASH(...)      M_GET_METHOD(HASH,        M_NO_DEF_HASH,      __VA_ARGS__)
 #define M_GET_EQUAL(...)     M_GET_METHOD(EQUAL,       M_EQUAL_DEFAULT,    __VA_ARGS__)
 #define M_GET_CMP(...)       M_GET_METHOD(CMP,         M_CMP_DEFAULT,      __VA_ARGS__)
 #define M_GET_TYPE(...)      M_GET_METHOD(TYPE,        M_NO_DEF_TYPE,      __VA_ARGS__)
-#define M_GET_SUBTYPE(...)   M_GET_METHOD(SUBTYPE,     M_NO_DEF_TYPE,      __VA_ARGS__)
-#define M_GET_GENTYPE(...)   M_GET_METHOD(GENTYPE,     M_NO_DEF_TYPE,      __VA_ARGS__)
-#define M_GET_NAME(...)      M_GET_METHOD(NAME,        M_NO_DEF_TYPE,      __VA_ARGS__)
+#define M_GET_SUBTYPE(...)   M_GET_METHOD(SUBTYPE,     M_NO_DEF_SUBTYPE,      __VA_ARGS__)
+#define M_GET_SUBTYPE_PTR(...) M_GET_METHOD(SUBTYPE_PTR, M_NO_DEF_SUBTYPE_PTR, __VA_ARGS__)
+#define M_GET_GENTYPE(...)   M_GET_METHOD(GENTYPE,     M_NO_DEF_GENTYPE,   __VA_ARGS__)
+#define M_GET_NAME(...)      M_GET_METHOD(NAME,        M_NO_DEF_NAME,      __VA_ARGS__)
 #define M_GET_OPLIST(...)    M_GET_METHOD(OPLIST,      (),                 __VA_ARGS__)
-#define M_GET_SORT(...)      M_GET_METHOD(SORT,        M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_SPLICE_BACK(...) M_GET_METHOD(SPLICE_BACK, M_NO_DEFAULT,     __VA_ARGS__)
-#define M_GET_SPLICE_AT(...) M_GET_METHOD(SPLICE_AT,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_TYPE(...)   M_GET_METHOD(IT_TYPE,     M_NO_DEF_TYPE,      __VA_ARGS__)
-#define M_GET_IT_FIRST(...)  M_GET_METHOD(IT_FIRST,    M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_LAST(...)   M_GET_METHOD(IT_LAST,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_END(...)    M_GET_METHOD(IT_END,      M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_SET(...)    M_GET_METHOD(IT_SET,      M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_END_P(...)  M_GET_METHOD(IT_END_P,    M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_LAST_P(...) M_GET_METHOD(IT_LAST_P,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_EQUAL_P(...) M_GET_METHOD(IT_EQUAL_P, M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_NEXT(...)   M_GET_METHOD(IT_NEXT,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_PREVIOUS(...) M_GET_METHOD(IT_PREVIOUS, M_NO_DEFAULT,     __VA_ARGS__)
-#define M_GET_IT_REF(...)    M_GET_METHOD(IT_REF,      M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_CREF(...)   M_GET_METHOD(IT_CREF,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_REMOVE(...) M_GET_METHOD(IT_REMOVE,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IT_INSERT(...) M_GET_METHOD(IT_INSERT,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_EMPTY_P(...) M_GET_METHOD(EMPTY_P, M_NO_DEFAULT,       __VA_ARGS__)
+#define M_GET_SORT(...)      M_GET_METHOD(SORT,        M_NO_DEF_SORT,      __VA_ARGS__)
+#define M_GET_SPLICE_BACK(...) M_GET_METHOD(SPLICE_BACK, M_NO_DEF_SPLICE_BACK, __VA_ARGS__)
+#define M_GET_SPLICE_AT(...) M_GET_METHOD(SPLICE_AT,   M_NO_DEF_SPLICE_AT, __VA_ARGS__)
+#define M_GET_IT_TYPE(...)   M_GET_METHOD(IT_TYPE,     M_NO_DEF_IT_TYPE,   __VA_ARGS__)
+#define M_GET_IT_FIRST(...)  M_GET_METHOD(IT_FIRST,    M_NO_DEF_IT_FIRST,  __VA_ARGS__)
+#define M_GET_IT_LAST(...)   M_GET_METHOD(IT_LAST,     M_NO_DEF_IT_LAST,   __VA_ARGS__)
+#define M_GET_IT_END(...)    M_GET_METHOD(IT_END,      M_NO_DEF_IT_END,    __VA_ARGS__)
+#define M_GET_IT_SET(...)    M_GET_METHOD(IT_SET,      M_NO_DEF_IT_SET,    __VA_ARGS__)
+#define M_GET_IT_END_P(...)  M_GET_METHOD(IT_END_P,    M_NO_DEF_IT_END_P,  __VA_ARGS__)
+#define M_GET_IT_LAST_P(...) M_GET_METHOD(IT_LAST_P,   M_NO_DEF_IT_LAST_P, __VA_ARGS__)
+#define M_GET_IT_EQUAL_P(...) M_GET_METHOD(IT_EQUAL_P, M_NO_DEF_IT_EQUAL_P,__VA_ARGS__)
+#define M_GET_IT_NEXT(...)   M_GET_METHOD(IT_NEXT,     M_NO_DEF_IT_NEXT,   __VA_ARGS__)
+#define M_GET_IT_PREVIOUS(...) M_GET_METHOD(IT_PREVIOUS, M_NO_DEF_IT_PREVIOUS,__VA_ARGS__)
+#define M_GET_IT_REF(...)    M_GET_METHOD(IT_REF,      M_NO_DEF_IT_REF,    __VA_ARGS__)
+#define M_GET_IT_CREF(...)   M_GET_METHOD(IT_CREF,     M_NO_DEF_IT_CREFT,  __VA_ARGS__)
+#define M_GET_IT_REMOVE(...) M_GET_METHOD(IT_REMOVE,   M_NO_DEF_IT_REMOVE, __VA_ARGS__)
+#define M_GET_IT_INSERT(...) M_GET_METHOD(IT_INSERT,   M_NO_DEF_IT_INSERT, __VA_ARGS__)
+#define M_GET_EMPTY_P(...)   M_GET_METHOD(EMPTY_P,     M_NO_DEF_EMPTY_P,   __VA_ARGS__)
 #define M_GET_ADD(...)       M_GET_METHOD(ADD,         M_ADD_DEFAULT,      __VA_ARGS__)
 #define M_GET_SUB(...)       M_GET_METHOD(SUB,         M_SUB_DEFAULT,      __VA_ARGS__)
 #define M_GET_MUL(...)       M_GET_METHOD(MUL,         M_MUL_DEFAULT,      __VA_ARGS__)
 #define M_GET_DIV(...)       M_GET_METHOD(DIV,         M_DIV_DEFAULT,      __VA_ARGS__)
-#define M_GET_RESET(...)     M_GET_METHOD(RESET,       M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_KEY_TYPE(...)  M_GET_METHOD(KEY_TYPE,    M_NO_DEF_TYPE,      __VA_ARGS__)
-#define M_GET_VALUE_TYPE(...) M_GET_METHOD(VALUE_TYPE, M_NO_DEF_TYPE,      __VA_ARGS__)
-#define M_GET_KEY_OPLIST(...) M_GET_METHOD(KEY_OPLIST, M_NO_DEF_TYPE,      __VA_ARGS__)
-#define M_GET_VALUE_OPLIST(...) M_GET_METHOD(VALUE_OPLIST, M_NO_DEF_TYPE,  __VA_ARGS__)
-#define M_GET_GET_KEY(...)   M_GET_METHOD(GET_KEY,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_SET_KEY(...)   M_GET_METHOD(SET_KEY,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_SAFE_GET_KEY(...)  M_GET_METHOD(SAFE_GET_KEY,    M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_ERASE_KEY(...) M_GET_METHOD(ERASE_KEY,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_GET_SIZE(...)  M_GET_METHOD(GET_SIZE,    M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_PUSH(...)      M_GET_METHOD(PUSH,        M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_POP(...)       M_GET_METHOD(POP,         M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_PUSH_MOVE(...) M_GET_METHOD(PUSH_MOVE,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_POP_MOVE(...)  M_GET_METHOD(POP_MOVE,    M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_REVERSE(...)   M_GET_METHOD(REVERSE,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_GET_STR(...)   M_GET_METHOD(GET_STR,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_PARSE_STR(...) M_GET_METHOD(PARSE_STR,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_OUT_STR(...)   M_GET_METHOD(OUT_STR,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IN_STR(...)    M_GET_METHOD(IN_STR,      M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_OUT_SERIAL(...) M_GET_METHOD(OUT_SERIAL, M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_IN_SERIAL(...) M_GET_METHOD(IN_SERIAL,   M_NO_DEFAULT,       __VA_ARGS__)
+#define M_GET_RESET(...)     M_GET_METHOD(RESET,       M_NO_DEF_RESET,     __VA_ARGS__)
+#define M_GET_KEY_TYPE(...)  M_GET_METHOD(KEY_TYPE,    M_NO_DEF_KEY_TYPE,  __VA_ARGS__)
+#define M_GET_VALUE_TYPE(...) M_GET_METHOD(VALUE_TYPE, M_NO_DEF_VALUE_TYPE,__VA_ARGS__)
+#define M_GET_KEY_OPLIST(...) M_GET_METHOD(KEY_OPLIST, (),                 __VA_ARGS__)
+#define M_GET_VALUE_OPLIST(...) M_GET_METHOD(VALUE_OPLIST, (),             __VA_ARGS__)
+#define M_GET_GET_KEY(...)   M_GET_METHOD(GET_KEY,     M_NO_DEF_GET_KEY,   __VA_ARGS__)
+#define M_GET_SET_KEY(...)   M_GET_METHOD(SET_KEY,     M_NO_DEF_SET_KEY,   __VA_ARGS__)
+#define M_GET_SAFE_GET_KEY(...) M_GET_METHOD(SAFE_GET_KEY, M_NO_DEF_SAFE_GET_KEY, __VA_ARGS__)
+#define M_GET_ERASE_KEY(...) M_GET_METHOD(ERASE_KEY,   M_NO_DEF_ERASE_KEY, __VA_ARGS__)
+#define M_GET_GET_SIZE(...)  M_GET_METHOD(GET_SIZE,    M_NO_DEF_GET_SIZE,  __VA_ARGS__)
+#define M_GET_PUSH(...)      M_GET_METHOD(PUSH,        M_NO_DEF_PUSH,      __VA_ARGS__)
+#define M_GET_POP(...)       M_GET_METHOD(POP,         M_NO_DEF_POP,       __VA_ARGS__)
+#define M_GET_PUSH_MOVE(...) M_GET_METHOD(PUSH_MOVE,   M_NO_DEF_PUSH_MOVE, __VA_ARGS__)
+#define M_GET_POP_MOVE(...)  M_GET_METHOD(POP_MOVE,    M_NO_DEF_POP_MOVE,  __VA_ARGS__)
+#define M_GET_REVERSE(...)   M_GET_METHOD(REVERSE,     M_NO_DEF_REVERSE,   __VA_ARGS__)
+#define M_GET_GET_STR(...)   M_GET_METHOD(GET_STR,     M_NO_DEF_GET_STR,   __VA_ARGS__)
+#define M_GET_PARSE_STR(...) M_GET_METHOD(PARSE_STR,   M_NO_DEF_PARSE_STR, __VA_ARGS__)
+#define M_GET_OUT_STR(...)   M_GET_METHOD(OUT_STR,     M_NO_DEF_OUT_STR,   __VA_ARGS__)
+#define M_GET_IN_STR(...)    M_GET_METHOD(IN_STR,      M_NO_DEF_IN_STR,    __VA_ARGS__)
+#define M_GET_OUT_SERIAL(...) M_GET_METHOD(OUT_SERIAL, M_NO_DEF_OUT_SERIAL,__VA_ARGS__)
+#define M_GET_IN_SERIAL(...) M_GET_METHOD(IN_SERIAL,   M_NO_DEF_IN_SERIAL, __VA_ARGS__)
 #define M_GET_SEPARATOR(...) M_GET_METHOD(SEPARATOR,   ',',                __VA_ARGS__)
 #define M_GET_EXT_ALGO(...)  M_GET_METHOD(EXT_ALGO,    M_NO_EXT_ALGO,      __VA_ARGS__)
 #define M_GET_INC_ALLOC(...) M_GET_METHOD(INC_ALLOC,   M_INC_ALLOC_DEFAULT, __VA_ARGS__)
-#define M_GET_OOR_SET(...)   M_GET_METHOD(OOR_SET,     M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_OOR_EQUAL(...) M_GET_METHOD(OOR_EQUAL,   M_NO_DEFAULT,       __VA_ARGS__)
-#define M_GET_LIMITS(...)    M_GET_METHOD(LIMITS,      M_LIMITS_DEFAULT,   __VA_ARGS__)
+#define M_GET_OOR_SET(...)   M_GET_METHOD(OOR_SET,     M_NO_DEF_OOR_SET,   __VA_ARGS__)
+#define M_GET_OOR_EQUAL(...) M_GET_METHOD(OOR_EQUAL,   M_NO_DEF_OOR_EQUAL, __VA_ARGS__)
 #define M_GET_PROPERTIES(...) M_GET_METHOD(PROPERTIES, (),                 __VA_ARGS__)
-#define M_GET_EMPLACE_TYPE(...) M_GET_METHOD(EMPLACE_TYPE, M_NO_DEFAULT,   __VA_ARGS__)
-// As sttribute customization
+#define M_GET_EMPLACE_TYPE(...) M_GET_METHOD(EMPLACE_TYPE,             ,   __VA_ARGS__)
+// As attribute customization
 #define M_GET_NEW(...)       M_GET_METHOD(NEW,         M_NEW_DEFAULT,      __VA_ARGS__)
 #define M_GET_DEL(...)       M_GET_METHOD(DEL,         M_DEL_DEFAULT,      __VA_ARGS__)
 #define M_GET_REALLOC(...)   M_GET_METHOD(REALLOC,     M_REALLOC_DEFAULT,  __VA_ARGS__)
 #define M_GET_FREE(...)      M_GET_METHOD(FREE,        M_FREE_DEFAULT,     __VA_ARGS__)
-#define M_GET_MEMPOOL(...)   M_GET_METHOD(MEMPOOL,     M_NO_DEFAULT,       __VA_ARGS__)
+#define M_GET_MEMPOOL(...)   M_GET_METHOD(MEMPOOL,     M_NO_DEF_MEMPOOL,   __VA_ARGS__)
 #define M_GET_MEMPOOL_LINKAGE(...)   M_GET_METHOD(MEMPOOL_LINKAGE, ,       __VA_ARGS__)
 #define M_GET_SIZE(...)      M_GET_METHOD(SIZE,        0,                  __VA_ARGS__)
 #define M_GET_CONTEXT(...)   M_GET_METHOD(CONTEXT,     0,                  __VA_ARGS__)
@@ -3540,6 +3521,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_CALL_CMP(oplist, ...) M_APPLY_API(M_GET_CMP oplist, oplist, __VA_ARGS__)
 //#define M_CALL_TYPE(oplist, ...) M_APPLY_API(M_GET_TYPE oplist, oplist, __VA_ARGS__)
 //#define M_CALL_SUBTYPE(oplist, ...) M_APPLY_API(M_GET_SUBTYPE oplist, oplist, __VA_ARGS__)
+//#define M_CALL_SUBTYPE_PTR(oplist, ...) M_APPLY_API(M_GET_SUBTYPE_PTR oplist, oplist, __VA_ARGS__)
 //#define M_CALL_GENTYPE(oplist, ...) M_APPLY_API(M_GET_GENTYPE oplist, oplist, __VA_ARGS__)
 //#define M_CALL_NAME(oplist, ...) M_APPLY_API(M_GET_NAME oplist, oplist, __VA_ARGS__)
 //#define M_CALL_OPLIST(oplist, ...) M_APPLY_API(M_GET_OPLIST oplist, oplist, __VA_ARGS__)
@@ -3587,7 +3569,6 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_CALL_INC_ALLOC(oplist, ...) M_APPLY_API(M_GET_INC_ALLOC oplist, oplist, __VA_ARGS__)
 #define M_CALL_OOR_SET(oplist, ...) M_APPLY_API(M_GET_OOR_SET oplist, oplist, __VA_ARGS__)
 #define M_CALL_OOR_EQUAL(oplist, ...) M_APPLY_API(M_GET_OOR_EQUAL oplist, oplist, __VA_ARGS__)
-//#define M_CALL_LIMITS(oplist, ...) M_APPLY_API(M_GET_LIMITS oplist, oplist, __VA_ARGS__)
 //#define M_CALL_PROPERTIES(oplist, ...) M_APPLY_API(M_GET_PROPERTIES oplist, oplist, __VA_ARGS__)
 //#define M_CALL_EMPLACE_TYPE(oplist, ...) M_APPLY_API(M_GET_EMPLACE_TYPE oplist, oplist, __VA_ARGS__)
 // As attribute customization
@@ -3736,16 +3717,76 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_OPLAPI_EXTRACT_API(...)     ( __VA_ARGS__ )
 
 
-/* Define the no default function that generates a compiler error
-   if the method is expanded.
+/* Define the no default function that generates 
+ * a proper compiler error if the method is expanded.
 */
-#define M_NO_DEFAULT(...)                                                     \
-  M_STATIC_ASSERT(false, M_LIB_MISSING_METHOD,                                \
-  "The requested operator has no method registered in the given OPLIST. ")
+#define M_NO_DEFAULT(operator, return_type)                                   \
+  (M_STATIC_ASSERT(false, M_LIB_MISSING_METHOD,                               \
+  "The " #operator " operator has no method associated in the given OPLIST."),\
+  (return_type) 0)
 
-#define M_NO_DEF_TYPE                                                         \
-  M_STATIC_ASSERT(false, M_LIB_MISSING_METHOD,                                \
-  "The requested operator has no type/subtype/suboplist registered in the given OPLIST. ")
+#define M_NO_DEF_INIT_MOVE(...)   M_NO_DEFAULT(INIT_MOVE, void)
+#define M_NO_DEF_INIT_WITH(...)   M_NO_DEFAULT(INIT_WITH, void)
+#define M_NO_DEF_MOVE(...)        M_NO_DEFAULT(MOVE, void)
+#define M_NO_DEF_SWAP(...)        M_NO_DEFAULT(SWAP, void)
+#define M_NO_DEF_HASH(...)        M_NO_DEFAULT(HASH, size_t)
+#define M_NO_DEF_SORT(...)        M_NO_DEFAULT(SORT, void)
+#define M_NO_DEF_SPLICE_BACK(...) M_NO_DEFAULT(SPLICE_BACK, void)
+#define M_NO_DEF_SPLICE_AT(...)   M_NO_DEFAULT(SPLICE_AT, void)
+#define M_NO_DEF_IT_FIRST(...)    M_NO_DEFAULT(IT_FIRST, void)
+#define M_NO_DEF_IT_LAST(...)     M_NO_DEFAULT(IT_LAST, void)
+#define M_NO_DEF_IT_END(...)      M_NO_DEFAULT(IT_END, void)
+#define M_NO_DEF_IT_SET(...)      M_NO_DEFAULT(IT_SET, void)
+#define M_NO_DEF_IT_END_P(...)    M_NO_DEFAULT(IT_END_P, bool)
+#define M_NO_DEF_IT_LAST_P(...)   M_NO_DEFAULT(IT_LAST_P, bool)
+#define M_NO_DEF_IT_EQUAL_P(...)  M_NO_DEFAULT(IT_EQUAL_P, bool)
+#define M_NO_DEF_IT_NEXT(...)     M_NO_DEFAULT(IT_NEXT, void)
+#define M_NO_DEF_IT_PREVIOUS(...) M_NO_DEFAULT(IT_PREVIOUS, void)
+#define M_NO_DEF_IT_REF(...)      M_NO_DEFAULT(IT_REF, void)
+#define M_NO_DEF_IT_CREF(...)     M_NO_DEFAULT(IT_CREF, void)
+#define M_NO_DEF_IT_REMOVE(...)   M_NO_DEFAULT(IT_REMOVE, void)
+#define M_NO_DEF_IT_INSERT(...)   M_NO_DEFAULT(IT_INSET, void)
+#define M_NO_DEF_EMPTY_P(...)     M_NO_DEFAULT(EMPTY_P, bool)
+#define M_NO_DEF_RESET(...)       M_NO_DEFAULT(RESET, void)
+#define M_NO_DEF_GET_KEY(...)     M_NO_DEFAULT(GET_KEY, void*)
+#define M_NO_DEF_SET_KEY(...)     M_NO_DEFAULT(SET_KEY, void)
+#define M_NO_DEF_SAFE_GET_KEY(...) M_NO_DEFAULT(SAFE_GET_KEY, void*)
+#define M_NO_DEF_ERASE_KEY(...)   M_NO_DEFAULT(ERASE_KEY, void)
+#define M_NO_DEF_GET_SIZE(...)    M_NO_DEFAULT(GET_SIZE, size_t)
+#define M_NO_DEF_PUSH(...)        M_NO_DEFAULT(PUSH, void)
+#define M_NO_DEF_POP(...)         M_NO_DEFAULT(POP, void)
+#define M_NO_DEF_PUSH_MOVE(...)   M_NO_DEFAULT(PUSH_MOVE, void)
+#define M_NO_DEF_POP_MOVE(...)    M_NO_DEFAULT(POP_MOVE, void)
+#define M_NO_DEF_REVERSE(...)     M_NO_DEFAULT(REVERSE, void)
+#define M_NO_DEF_GET_STR(...)     M_NO_DEFAULT(GET_STR, void)
+#define M_NO_DEF_PARSE_STR(...)   M_NO_DEFAULT(PARSE_STR, bool)
+#define M_NO_DEF_OUT_STR(...)     M_NO_DEFAULT(OUT_STR, void)
+#define M_NO_DEF_IN_STR(...)      M_NO_DEFAULT(IN_STR, bool)
+#define M_NO_DEF_OUT_SERIAL(...)  M_NO_DEFAULT(OUT_SERIAL, m_serial_return_code_t)
+#define M_NO_DEF_IN_SERIAL(...)   M_NO_DEFAULT(IN_SERIAL, m_serial_return_code_t)
+#define M_NO_DEF_OOR_SET(...)     M_NO_DEFAULT(OOR_SET, void)
+#define M_NO_DEF_OOR_EQUAL(...)   M_NO_DEFAULT(OOR_EQUAL, bool)
+#define M_NO_DEF_MEMPOOL(...)     M_NO_DEFAULT(MEMPOOL, void)
+
+/* Create a type with an invalid static assertion.
+   Creating a type allowed the macro into something not too bad
+   from a syntaxic point of view, reducing the amount of errors reported
+   so that the user can concentrate to the real error.
+*/
+#define M_NO_DEFAULT_TYPE(op)                                                 \
+  struct { int m_x[                                                           \
+  (M_STATIC_ASSERT(false, M_LIB_MISSING_METHOD,                               \
+  "The " #op " operator is not registered in the given OPLIST. ")             \
+  , 1)]; }
+
+#define M_NO_DEF_TYPE             M_NO_DEFAULT_TYPE(TYPE)
+#define M_NO_DEF_IT_TYPE          M_NO_DEFAULT_TYPE(IT_TYPE)
+#define M_NO_DEF_SUBTYPE          M_NO_DEFAULT_TYPE(SUBTYPE)
+#define M_NO_DEF_SUBTYPE_PTR      M_NO_DEFAULT_TYPE(SUBTYPE_PTR)
+#define M_NO_DEF_GENTYPE          M_NO_DEFAULT_TYPE(GENTYPE)
+#define M_NO_DEF_KEY_TYPE         M_NO_DEFAULT_TYPE(KEY_TYPE)
+#define M_NO_DEF_VALUE_TYPE       M_NO_DEFAULT_TYPE(VALUE_TYPE)
+#define M_NO_DEF_NAME             M_NO_DEFAULT_TYPE(NAME) m_no_name
 
 /* Test if the given variable is a basic C variable:
    int, float, enum, bool or compatible.
@@ -3780,11 +3821,19 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 /* Check if both variables are of the same type.
    The test compare their size.
    NOTE: Not perfect but catch some errors */
+#if defined(__GNUC__) && !defined(__cplusplus) 
+#define M_CHECK_SAME(a, b)                                                    \
+  M_STATIC_ASSERT(__builtin_types_compatible_p(__typeof__(a), __typeof__(b)), \
+                  M_LIB_NOT_SAME_TYPE,                                        \
+                  "The variable " M_AS_STR(a) " and " M_AS_STR(b)             \
+                  " are not of same type.")
+#else
 #define M_CHECK_SAME(a, b)                                                    \
   M_STATIC_ASSERT(sizeof(a) == sizeof(b),                                     \
                   M_LIB_NOT_SAME_TYPE,                                        \
                   "The variable " M_AS_STR(a) " and " M_AS_STR(b)             \
                   " are not of same type.")
+#endif
 
 /* Check if the oplist is compatible with the type.
    The oplist should define a TYPE method, in which case it is tested.
@@ -4249,6 +4298,7 @@ m_core_parse2_enum (const char str[], const char **endptr)
 #define M_OPL_bool()   M_BOOL_OPLIST
 #define M_OPL__Bool()  M_BOOL_OPLIST
 
+
 /************************************************************/
 /******************** Syntax Enhancing **********************/
 /************************************************************/
@@ -4359,10 +4409,15 @@ m_core_parse2_enum (const char str[], const char **endptr)
 #define M_LET_TRY_INJECT_POST(cont, oplist, name)
 
 /*
-  Internal M_LET for use for withing container.
+ * Internal M_LET for use within container.
+ * Declare the given variable of the given type and
+ * initialize / clear it using the given oplist .
+ * 
+ * index shall be a number within the function (from 1)
+ * identifying the M_QLET in the service.
 */
-#define M_QLET(x, type, oplist)                                               \
-  M_LET(x, M_OPEXTEND(oplist, TYPE(type)))
+#define M_QLET(index, var, type, oplist)                                      \
+  M_LET(var, M_OPEXTEND(oplist, TYPE(type)))
 
 /* Transform the va list by adding their number as the first argument of
    the list.
@@ -4479,25 +4534,24 @@ m_core_parse2_enum (const char str[], const char **endptr)
 
 /* If exceptions are activated, M_ON_EXCEPTION enables support for fixing
   the data structure when an exception is throw,
-  so that the data structure is proper for the CLEAR method.
+  so that the data structure integrity is ready for the CLEAR method.
   The fix code is *only* executed on exception.
   USAGE:
     void init_function(struct_t s) {
-      M_ON_EXCEPTION(name, OPLIST, s->size = i ) {
+      M_ON_EXCEPTION(s->size = i ) {
         // Rest of initialization code
       }
     }
+  Do nothing if exceptions are not enabled.
  */
-#define M_ON_EXCEPTION(name, oplist, fix)                                     \
-  M_IF(M_GET_PROPERTY(oplist, NOCLEAR))(M_EAT, M_ON_EXCEPTION_B)              \
-  (M_C(m_var_, name), fix)
+#define M_ON_EXCEPTION(...)  for(bool cont = true; cont; cont = false)        \
 
-#define M_ON_EXCEPTION_B(cont, fix)                                           \
-  for(bool cont = true; cont; cont = false)                                   \
-    M_DEFER_TRY_INJECT_PRE(cont, clear)                                       \
-      for( ; cont ; cont = false)                                             \
-        M_DEFER_TRY_INJECT_POST(cont, clear)                                  \
-          for( ; cont; cont = false)
+/* If exceptions are activated, M_IF_EXCEPTION will expand the code.
+  Do nothing if exceptions are not enabled. */
+#define M_IF_EXCEPTION(...) (void) 0
+
+/* Declare a variable as volatile if exceptions are enabled */
+#define m_volatile /* nothing */
 
 
 /* Declare a variable, initialize it, continue if the initialization succeeds,
@@ -4987,7 +5041,7 @@ m_core_parse2_enum (const char str[], const char **endptr)
 /* Can be increased / decreased by user code if needed
    to increase / decrease backoff of code */
 #ifndef M_USE_BACKOFF_MAX_COUNT
-#define M_USE_BACKOFF_MAX_COUNT 6
+#define M_USE_BACKOFF_MAX_COUNT 8
 #endif
 
 /* Exponential backoff object.
@@ -5001,14 +5055,12 @@ typedef struct m_core_backoff_s {
   unsigned int seed;                // Initial seed
 } m_core_backoff_ct[1];
 
-/* Initialize a backoff object.
- * Use the C function rand to initialize its internal seed.
- * It should be good enough for the purpose of the backoff */
+/* Initialize a backoff object. */
 M_INLINE void
 m_core_backoff_init(m_core_backoff_ct backoff)
 {
   backoff->count = 0;
-  backoff->seed  = (unsigned int) rand();
+  backoff->seed  = 0;
 }
 
 /* Reset the count of the backoff object */
@@ -5024,6 +5076,16 @@ m_core_backoff_reset(m_core_backoff_ct backoff)
 M_INLINE void
 m_core_backoff_wait(m_core_backoff_ct backoff)
 {
+  if (backoff->count <= 2) {
+    backoff->count++;
+    if (backoff->count < 3) 
+      return;
+    // Use the C function rand to initialize its internal seed.
+    // It should be good enough for the purpose of the backoff.
+    // We only do it once if we already have performed several loops
+    // to avoid paying the cost of 'rand' for the small start.
+    backoff->seed  = (unsigned int) rand();
+  }
   /* x is qualified as volatile to avoid being optimized away
      by the compiler in the active sleep loop */
   volatile int x = 0;
