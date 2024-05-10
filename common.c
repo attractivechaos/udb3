@@ -27,9 +27,9 @@ static long udb_peakrss(void)
 {
 	struct rusage r;
 	getrusage(RUSAGE_SELF, &r);
-#ifdef __linux__
+#if defined(__linux__)
 	return r.ru_maxrss * 1024;
-#else
+#elif defined(__APPLE__)
 	return r.ru_maxrss;
 #endif
 }
@@ -68,7 +68,7 @@ static inline uint64_t udb_hash_fn(uint32_t z)
 
 static inline uint32_t udb_get_key(const uint32_t n, const uint64_t y)
 {
-	return (uint32_t)(y % (n>>2));
+	return (uint32_t)(y % (n>>2)) * 0x45D9F3B;
 }
 
 /**********************************************
