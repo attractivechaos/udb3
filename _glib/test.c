@@ -14,7 +14,13 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 			int absent;
 			uint64_t y = udb_splitmix64(&x);
 			uint32_t key = udb_get_key(n, y);
-			if (is_del) { // FIXME: not implemented
+			if (is_del) {
+				if (g_hash_table_lookup_extended(h, GINT_TO_POINTER(key), &ori_key, &v)) {
+					g_hash_table_remove(h, GINT_TO_POINTER(key));
+				} else {
+					g_hash_table_insert(h, GINT_TO_POINTER(key), GINT_TO_POINTER(i));
+					++z;
+				}
 			} else {
 				uint32_t cnt = 0;
 				if (g_hash_table_lookup_extended(h, GINT_TO_POINTER(key), &ori_key, &v)) {
