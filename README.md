@@ -62,7 +62,7 @@ insertion but does not perform well on deletion. I developed [khashl][khashl].
 The figure above focuses on high-performance hash table libraries. The figure
 below shows several other popular libraries.
 
-<img align="left" src="https://i.ibb.co/s9vP59h/240509-slow.png"/>
+<img align="left" src="https://i.ibb.co/WcbZQyS/240529-slow.png"/>
 
 We can see that `std::unordered_map` in clang and [uthash][uthash] are times slower and
 use more memory. They should be avoided if you need a fast hash table.
