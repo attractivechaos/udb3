@@ -63,7 +63,7 @@ typedef struct {
 	uint8_t b[UDB_BLOCK_LEN];
 } udb_block_t;
 
-static inline uint64_t udb_hash_fn(udb_block_t b)
+static inline uint64_t udb_hash_fn(const udb_block_t b)
 {
 	uint64_t h = 0xcbf29ce484222325ULL;
 	int i;
@@ -72,9 +72,9 @@ static inline uint64_t udb_hash_fn(udb_block_t b)
 	return h;
 }
 
-static inline int udb_block_eq(udb_block_t a, udb_block_t b)
+static inline int udb_block_eq(const udb_block_t a, const udb_block_t b)
 {
-	return memcpy(a.b, b.b, UDB_BLOCK_LEN) == 0;
+	return memcmp(a.b, b.b, UDB_BLOCK_LEN) == 0;
 }
 
 static inline uint64_t udb_get_key(const uint32_t n, const uint64_t y, udb_block_t *b)
