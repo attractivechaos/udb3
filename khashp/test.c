@@ -3,13 +3,7 @@
 
 static khint_t hash_fn32(const void *p, uint32_t key_len)
 {
-	uint32_t x = *(uint32_t*)p;
-	x ^= x >> 16;
-	x *= 0x85ebca6bU;
-	x ^= x >> 13;
-	x *= 0xc2b2ae35U;
-	x ^= x >> 16;
-	return x;
+	return udb_hash_fn(*(uint32_t*)p);
 }
 
 static int key_eq32(const void *p1, const void *p2, uint32_t key_len)
