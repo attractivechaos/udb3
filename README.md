@@ -96,3 +96,4 @@ read other benchmarks such as [this][bench1] and [this][bench2].
 [uthash]: https://troydhanson.github.io/uthash/
 [bench1]: https://martin.ankerl.com/2022/08/27/hashmap-bench-01/
 [bench2]: https://github.com/renzibei/hashtable-bench
+[phmap]: https://greg7mdp.github.io/parallel-hashmap/
