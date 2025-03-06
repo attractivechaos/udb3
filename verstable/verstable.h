@@ -1,4 +1,4 @@
-/*------------------------------------------------- VERSTABLE v2.0.0 ---------------------------------------------------
+/*------------------------------------------------- VERSTABLE v2.1.1 ---------------------------------------------------
 
 Verstable is a C99-compatible, open-addressing hash table using quadratic probing and the following additions:
 
@@ -17,7 +17,7 @@ Verstable is a C99-compatible, open-addressing hash table using quadratic probin
   (optionally) the value.
 
 One way to conceptualize this scheme is as a chained hash table in which overflowing keys are stored not in separate
-memory allocations but in otherwise unused buckets. In this regard, it shares similarities with Malte Skarupke’s Bytell
+memory allocations but in otherwise unused buckets. In this regard, it shares similarities with Malte Skarupke's Bytell
 hash table (https://www.youtube.com/watch?v=M2fKMP47slQ) and traditional "coalesced hashing".
 
 Advantages of this scheme include:
@@ -67,12 +67,16 @@ Usage example:
   |   {                                                     |   int_set_init( &our_set );                              |
   |     int_set_itr itr = vt_insert( &our_set, i );         |                                                          |
   |     if( vt_is_end( itr ) )                              |   // Inserting keys.                                     |
-  |       exit( 1 ); // Out of memory.                      |   for( int i = 0; i < 10; ++i )                          |
-  |   }                                                     |   {                                                      |
-  |                                                         |     int_set_itr itr =                                    |
-  |   // Erasing keys.                                      |       int_set_insert( &our_set, i );                     |
-  |   for( int i = 0; i < 10; i += 3 )                      |     if( int_set_is_end( itr ) )                          |
-  |   vt_erase( &our_set, i );                              |       exit( 1 ); // Out of memory.                       |
+  |     {                                                   |   for( int i = 0; i < 10; ++i )                          |
+  |       // Out of memory, so abort.                       |   {                                                      |
+  |       vt_cleanup( &our_set );                           |     int_set_itr itr =                                    |
+  |       return 1;                                         |       int_set_insert( &our_set, i );                     |
+  |     }                                                   |     if( int_set_is_end( itr ) )                          |
+  |   }                                                     |     {                                                    |
+  |                                                         |       // Out of memory, so abort.                        |
+  |   // Erasing keys.                                      |       int_set_cleanup( &our_set );                       |
+  |   for( int i = 0; i < 10; i += 3 )                      |       return 1;                                          |
+  |     vt_erase( &our_set, i );                            |     }                                                    |
   |                                                         |   }                                                      |
   |   // Retrieving keys.                                   |                                                          |
   |   for( int i = 0; i < 10; ++i )                         |   // Erasing keys.                                       |
@@ -90,13 +94,13 @@ Usage example:
   |     itr = vt_next( itr )                                |                                                          |
   |   )                                                     |   // Iteration.                                          |
   |     printf( "%d ", itr.data->key );                     |   for(                                                   |
-  |   // Printed: 4 5 2 8 1 7                               |     int_set_itr itr =                                    |
+  |   // Printed: 2 4 7 1 5 8                               |     int_set_itr itr =                                    |
   |                                                         |       int_set_first( &our_set );                         |
   |   vt_cleanup( &our_set );                               |     !int_set_is_end( itr );                              |
   |                                                         |     itr = int_set_next( itr )                            |
   |   // Map.                                               |   )                                                      |
   |                                                         |     printf( "%d ", itr.data->key );                      |
-  |   int_int_map our_map;                                  |   // Printed: 4 5 2 8 1 7                                |
+  |   int_int_map our_map;                                  |   // Printed: 2 4 7 1 5 8                                |
   |   vt_init( &our_map );                                  |                                                          |
   |                                                         |   int_set_cleanup( &our_set );                           |
   |   // Inserting keys and values.                         |                                                          |
@@ -105,13 +109,17 @@ Usage example:
   |     int_int_map_itr itr =                               |   int_int_map our_map;                                   |
   |       vt_insert( &our_map, i, i + 1 );                  |   int_int_map_init( &our_map );                          |
   |     if( vt_is_end( itr ) )                              |                                                          |
-  |       exit( 1 ); // Out of memory.                      |   // Inserting keys and values.                          |
-  |   }                                                     |   for( int i = 0; i < 10; ++i )                          |
-  |                                                         |   {                                                      |
-  |   // Erasing keys and values.                           |     int_int_map_itr itr =                                |
-  |   for( int i = 0; i < 10; i += 3 )                      |       int_int_map_insert( &our_map, i, i + 1 );          |
-  |     vt_erase( &our_map, i );                            |     if( int_int_map_is_end( itr ) )                      |
-  |                                                         |       exit( 1 ); // Out of memory.                       |
+  |     {                                                   |   // Inserting keys and values.                          |
+  |       // Out of memory, so abort.                       |   for( int i = 0; i < 10; ++i )                          |
+  |       vt_cleanup( &our_map );                           |   {                                                      |
+  |       return 1;                                         |     int_int_map_itr itr =                                |
+  |     }                                                   |       int_int_map_insert( &our_map, i, i + 1 );          |
+  |   }                                                     |     if( int_int_map_is_end( itr ) )                      |
+  |                                                         |     {                                                    |
+  |   // Erasing keys and values.                           |       // Out of memory, so abort.                        |
+  |   for( int i = 0; i < 10; i += 3 )                      |       int_int_map_cleanup( &our_map );                   |
+  |     vt_erase( &our_map, i );                            |       return 1;                                          |
+  |                                                         |     }                                                    |
   |   // Retrieving keys and values.                        |   }                                                      |
   |   for( int i = 0; i < 10; ++i )                         |                                                          |
   |   {                                                     |   // Erasing keys and values.                            |
@@ -136,7 +144,7 @@ Usage example:
   |       itr.data->key,                                    |   for(                                                   |
   |       itr.data->val                                     |     int_int_map_itr itr =                                |
   |     );                                                  |       int_int_map_first( &our_map );                     |
-  |   // Printed: 4:5 5:6 2:3 8:9 1:2 7:8                   |     !int_int_map_is_end( itr );                          |
+  |   // Printed: 2:3 4:5 7:8 1:2 5:6 8:9                   |     !int_int_map_is_end( itr );                          |
   |                                                         |     itr = int_int_map_next( itr )                        |
   |   vt_cleanup( &our_map );                               |   )                                                      |
   | }                                                       |     printf(                                              |
@@ -144,7 +152,7 @@ Usage example:
   |                                                         |       itr.data->key,                                     |
   |                                                         |       itr.data->val                                      |
   |                                                         |     );                                                   |
-  |                                                         |   // Printed: 4:5 5:6 2:3 8:9 1:2 7:8                    |
+  |                                                         |   // Printed: 2:3 4:5 7:8 1:2 5:6 8:9                    |
   |                                                         |                                                          |
   |                                                         |   int_int_map_cleanup( &our_map );                       |
   |                                                         | }                                                        |
@@ -382,6 +390,10 @@ API:
 
 Version history:
 
+  18/06/2024 2.1.1: Fixed a bug affecting iteration on big-endian platforms under MSVC.
+  27/05/2024 2.1.0: Replaced the Murmur3 mixer with the fast-hash mixer as the default integer hash function.
+                    Fixed a bug that could theoretically cause a crash on rehash (triggerable in testing using
+                    NAME_shrink with a maximum load factor significantly higher than 1.0).
   06/02/2024 2.0.0: Improved custom allocator support by introducing the CTX_TY option and allowing user-supplied free
                     functions to receive the allocation size.
                     Improved documentation.
@@ -471,7 +483,7 @@ static inline size_t vt_quadratic( uint16_t displacement )
 static inline int vt_first_nonzero_uint16( uint64_t val )
 {
   const uint16_t endian_checker = 0x0001;
-  if( *(char *)&endian_checker ) // Little-endian (the compiler will optimize away the check at -O1 and above).
+  if( *(const char *)&endian_checker ) // Little-endian (the compiler will optimize away the check at -O1 and above).
     return __builtin_ctzll( val ) / 16;
   
   return __builtin_clzll( val ) / 16;
@@ -488,10 +500,13 @@ static inline int vt_first_nonzero_uint16( uint64_t val )
   unsigned long result;
 
   const uint16_t endian_checker = 0x0001;
-  if( *(char *)&endian_checker )
+  if( *(const char *)&endian_checker )
     _BitScanForward64( &result, val );
   else
+  {
     _BitScanReverse64( &result, val );
+    result = 63 - result;
+  }
 
   return result / 16;
 }
@@ -508,7 +523,7 @@ static inline int vt_first_nonzero_uint16( uint64_t val )
     result += 2;
   
   uint16_t quarter;
-  memcpy( &quarter, (char *)&val + result * 2, sizeof( uint16_t ) );
+  memcpy( &quarter, (char *)&val + result * sizeof( uint16_t ), sizeof( uint16_t ) );
   if( !quarter )
     result += 1;
   
@@ -523,13 +538,14 @@ static const uint16_t vt_empty_placeholder_metadatum = VT_EMPTY;
 
 // Default hash and comparison functions.
 
+// Fast-hash, as described by https://jonkagstrom.com/bit-mixer-construction and
+// https://code.google.com/archive/p/fast-hash.
+// In testing, this hash function provided slightly better performance than the Murmur3 mixer.
 static inline uint64_t vt_hash_integer( uint64_t key )
 {
-  key ^= key >> 33;
-  key *= 0xff51afd7ed558ccdull;
-  key ^= key >> 33;
-  key *= 0xc4ceb9fe1a85ec53ull;
-  key ^= key >> 33;
+  key ^= key >> 23;
+  key *= 0x2127599bf4325c37ull;
+  key ^= key >> 47;
   return key;
 }
 
@@ -987,7 +1003,7 @@ VT_API_FN_QUALIFIERS bool VT_CAT( NAME, _is_end )( VT_CAT( NAME, _itr ) itr )
 // Finds the earliest empty bucket in which a key belonging to home_bucket can be placed, assuming that home_bucket
 // is already occupied.
 // The reason to begin the search at home_bucket, rather than the end of the existing chain, is that keys deleted from
-// other chains might have freed buckets that could fall in this chain before the final key.
+// other chains might have freed up buckets that could fall in this chain before the final key.
 // Returns true if an empty bucket within the range of the displacement limit was found, in which case the final two
 // pointer arguments contain the index of the empty bucket and its quadratic displacement from home_bucket.
 static inline bool VT_CAT( NAME, _find_first_empty )(
@@ -1038,13 +1054,14 @@ static inline size_t VT_CAT( NAME, _find_insert_location_in_chain )(
 // Frees up a bucket occupied by a key not belonging there so that a new key belonging there can be placed there as the
 // beginning of a new chain.
 // This requires:
-// * Finding the previous key in the chain to which the occupying belongs by rehashing it and then traversing the chain.
+// * Finding the previous key in the chain to which the occupying key belongs by rehashing it and then traversing the
+//   chain.
 // * Disconnecting the key from the chain.
 // * Finding the appropriate empty bucket to which to move the key.
 // * Moving the key (and value) data to the empty bucket.
 // * Re-linking the key to the chain.
-// Returns true if the eviction succeeded, or false if no empty bucket to which to evict the occupying key can be found
-// within the displacement limit.
+// Returns true if the eviction succeeded, or false if no empty bucket to which to evict the occupying key could be
+// found within the displacement limit.
 static inline bool VT_CAT( NAME, _evict )( NAME *table, size_t bucket )
 {
   // Find the previous key in chain.
@@ -1103,7 +1120,7 @@ static inline VT_CAT( NAME, _itr ) VT_CAT( NAME, _end_itr )( void )
 //   home bucket, and then linked to the chain in a manner that maintains its quadratic order.
 // The unique argument tells the function whether to skip searching for the key before inserting it (on rehashing, this
 // step is unnecessary).
-// The replace argument tells the function whether to replace an exiting key.
+// The replace argument tells the function whether to replace an existing key.
 // If replace is true, the function returns an iterator to the inserted key, or an end iterator if the key was not
 // inserted because of the maximum load factor or displacement limit constraints.
 // If replace is false, then the return value is as described above, except that if the key already exists, the function
@@ -1210,9 +1227,10 @@ static inline VT_CAT( NAME, _itr ) VT_CAT( NAME, _insert_raw )(
   )
     return VT_CAT( NAME, _end_itr )();
 
+  // Insert the new key (and value) in the empty bucket and link it to the chain.
+
   size_t prev = VT_CAT( NAME, _find_insert_location_in_chain )( table, home_bucket, displacement );
 
-  // Insert the new key (and value) in the empty bucket and link it to the chain.
   table->buckets[ empty ].key = key;
   #ifdef VAL_TY
   table->buckets[ empty ].val = *val;
@@ -1295,19 +1313,23 @@ bool VT_CAT( NAME, _rehash )( NAME *table, size_t bucket_count )
         );
 
         if( VT_UNLIKELY( VT_CAT( NAME, _is_end )( itr ) ) )
-        {
-          FREE_FN(
-            new_table.buckets,
-            VT_CAT( NAME, _total_alloc_size )( &new_table )
-            #ifdef CTX_TY
-            , &new_table.ctx
-            #endif
-          );
-
-          bucket_count *= 2;
-          continue;
-        }
+          break;
       }
+
+    // If a key could not be reinserted due to the displacement limit, double the bucket count and retry.
+    if( VT_UNLIKELY( new_table.key_count < table->key_count ) )
+    {
+      FREE_FN(
+        new_table.buckets,
+        VT_CAT( NAME, _total_alloc_size )( &new_table )
+        #ifdef CTX_TY
+        , &new_table.ctx
+        #endif
+      );
+
+      bucket_count *= 2;
+      continue;
+    }
 
     if( table->buckets_mask )
       FREE_FN(
@@ -1442,13 +1464,13 @@ VT_API_FN_QUALIFIERS VT_CAT( NAME, _itr ) VT_CAT( NAME, _get )( NAME *table, KEY
 // Erases the key pointed to by the specified iterator.
 // The erasure always occurs at the end of the chain to which the key belongs.
 // If the key to be erased is not the last in the chain, it is swapped with the last so that erasure occurs at the end.
-// This helps keeps a chain's keys close to their home bucket for the sake of cache locality.
+// This helps keep a chain's keys close to their home bucket for the sake of cache locality.
 // Returns true if, in the case of iteration from first to end, NAME_next should now be called on the iterator to find
 // the next key.
 // This return value is necessary because at the iterator location, the erasure could result in an empty bucket, a
 // bucket containing a moved key already visited during the iteration, or a bucket containing a moved key not yet
 // visited.
-VT_API_FN_QUALIFIERS bool VT_CAT( NAME, _erase_itr_raw ) ( NAME *table, VT_CAT( NAME, _itr ) itr )
+VT_API_FN_QUALIFIERS bool VT_CAT( NAME, _erase_itr_raw )( NAME *table, VT_CAT( NAME, _itr ) itr )
 {
   --table->key_count;
   size_t itr_bucket = itr.metadatum - table->metadata;
@@ -1557,11 +1579,11 @@ static inline void VT_CAT( NAME, _fast_forward )( VT_CAT( NAME, _itr ) *itr )
 {
   while( true )
   {
-    uint64_t metadatum;
-    memcpy( &metadatum, itr->metadatum, 8 );
-    if( metadatum )
+    uint64_t metadata;
+    memcpy( &metadata, itr->metadatum, sizeof( uint64_t ) );
+    if( metadata )
     {
-      int offset = vt_first_nonzero_uint16( metadatum );
+      int offset = vt_first_nonzero_uint16( metadata );
       itr->data += offset;
       itr->metadatum += offset;
       itr->home_bucket = SIZE_MAX;

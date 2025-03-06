@@ -5,7 +5,7 @@
 #define VAL_TY uint32_t
 #define HASH_FN udb_hash_fn
 #define CMPR_FN vt_cmpr_integer
-// version 2.0.0; cloned on 2024-05-06
+// version 2.1.1; cloned on 2025-03-05
 #include "verstable.h"
 
 
