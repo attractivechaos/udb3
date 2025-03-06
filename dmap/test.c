@@ -2,7 +2,7 @@
 #include "dmap.h"
 
 // downloaded from https://github.com/jamesnolanverran/dmap
-// commit 73e6c6f
+// commit c781b24, checked out on 2025-03-05
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {
