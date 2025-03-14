@@ -40,7 +40,7 @@ struct map {
 // Thread-safe, lock-free insert/search.
 static uint32_t *upsert(map **m, uint32_t key, arena *a)
 {
-	for (uint32_t h = udb_hash_fn(key);; h <<= 2) {
+	for (uint64_t h = udb_hash_fn(key);; h <<= 2) {
 		map *n = __atomic_load_n(m, __ATOMIC_ACQUIRE);
 		if (!n) {
 			if (!a) {
@@ -57,7 +57,7 @@ static uint32_t *upsert(map **m, uint32_t key, arena *a)
 			*a = rollback;
 		}
 		if (n->key == key) return &n->value;
-		m = n->child + (h >> 30);
+		m = n->child + (h >> 62);
 	}
 	return 0;
 }
