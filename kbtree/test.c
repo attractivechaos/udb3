@@ -20,9 +20,13 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 			aux_t a, *p;
 			uint64_t y = udb_splitmix64(&x);
 			a.key = udb_get_key(n, y), a.cnt = 1;
+			p = kb_getp(32, h, &a);
 			if (is_del) {
+				if (p == 0) {
+					kb_putp(32, h, &a);
+					++z;
+				} else kb_delp(32, h, &a);
 			} else {
-				p = kb_getp(32, h, &a);
 				if (p == 0) {
 					kb_putp(32, h, &a);
 					++z;
