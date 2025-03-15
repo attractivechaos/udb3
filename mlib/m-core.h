@@ -1,7 +1,7 @@
 /*
  * M*LIB - Extended Pre-processing macros module
  *
- * Copyright (c) 2017-2024, Patrick Pelissier
+ * Copyright (c) 2017-2025, Patrick Pelissier
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -71,7 +71,7 @@
 /* Define M*LIB version */
 #define M_CORE_VERSION_MAJOR 0
 #define M_CORE_VERSION_MINOR 7
-#define M_CORE_VERSION_PATCHLEVEL 3
+#define M_CORE_VERSION_PATCHLEVEL 4
 
 /* M_ASSUME is equivalent to M_ASSERT, but gives hints to compiler
    about how to optimize the code if NDEBUG is defined.
@@ -132,14 +132,36 @@
 # define M_ATTR_NO_RETURN 
 #endif
 
-/* The cold attribute on functions is used to inform the compiler
-   that the function is unlikely to be executed. */
+/* The hot/cold attribute on functions is used to inform the compiler
+   that the function is likely/unlikely to be executed. */
 #if defined(__GNUC__)
+# define M_ATTR_HOT_FUNCTION     __attribute__ ((hot))
 # define M_ATTR_COLD_FUNCTION    __attribute__ ((cold))
 #else
+# define M_ATTR_HOT_FUNCTION
 # define M_ATTR_COLD_FUNCTION
 #endif
 
+/* Prefetch . */
+#if defined(__GNUC__)
+# define M_PREFETCH(p)           __builtin_prefetch((p), 0, 0)
+#else
+# define M_PREFETCH(p) do {                                                   \
+    volatile char m_c = *(volatile char *) (p);                               \
+    (void) m_c;                                                               \
+  } while (0)
+#endif
+
+/* Definition of the typeof keyword
+   In C23, we can use the standard keyword.
+   Otherwise we use some extensions of the compilers. */
+#ifdef _MSC_VER
+#define m_typeof(x) decltype(x)
+#elif defined(__GNUC__)   
+#define m_typeof(x) __typeof__(x)
+#else
+#define m_typeof(x) typeof(x)
+#endif
 
 /* Ignore some warnings detected by some compilers in the library.
  * Whatever we do, there is some warnings that cannot be fixed.
@@ -226,6 +248,24 @@
 /* No warnings disabled */
 #define M_BEGIN_PROTECTED_CODE
 #define M_END_PROTECTED_CODE
+
+#endif
+
+/* Warnings disabled for CLANG in C mode:
+   Due to the genericity of the _Generic generation,
+   we cannot avoid generating both T and const T in the generic association. */
+#if defined(__clang__) && __clang_major__ >= 15
+#define M_G3N_BEGIN_PROTECTED_CODE                                            \
+  _Pragma("clang diagnostic push")                                            \
+  _Pragma("clang diagnostic ignored \"-Wunreachable-code-generic-assoc\"")    
+
+#define M_G3N_END_PROTECTED_CODE                                              \
+  _Pragma("clang diagnostic pop")
+
+#else
+
+#define M_G3N_BEGIN_PROTECTED_CODE
+#define M_G3N_END_PROTECTED_CODE
 
 #endif
 
@@ -2893,11 +2933,15 @@ M_PARSE_DEFAULT_TYPE_DEF(m_core_parse_ldouble, long double, strtold, )
 
 
 /* C++ doesn't support flexible array within a structure.
-   Let's define at least one element for an array. */
+   Let's define at least one element for an array.
+   It doesn't also support VLA usage in function prototype.
+ */
 #ifdef __cplusplus
 # define M_MIN_FLEX_ARRAY_SIZE 1
+# define M_VLA(n)
 #else
 # define M_MIN_FLEX_ARRAY_SIZE 
+# define M_VLA(n) n
 #endif
 
 #if M_USE_STDARG && M_USE_STDIO
@@ -3336,87 +3380,90 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 
 /* Helper internal macros to make M_GET_METHOD works.
    List of supported methods for an oplist */
-#define M_INIT_INIT(a)           ,a,
-#define M_INIT_SET_INIT_SET(a)   ,a,
-#define M_INIT_MOVE_INIT_MOVE(a) ,a,
-#define M_INIT_WITH_INIT_WITH(a) ,a,
-#define M_SWAP_SWAP(a)           ,a,
-#define M_SET_SET(a)             ,a,
-#define M_MOVE_MOVE(a)           ,a,
-#define M_CLEAR_CLEAR(a)         ,a,
-#define M_HASH_HASH(a)           ,a,
-#define M_EQUAL_EQUAL(a)         ,a,
-#define M_CMP_CMP(a)             ,a,
-#define M_TYPE_TYPE(a)           ,a,
-#define M_SUBTYPE_SUBTYPE(a)     ,a,
-#define M_GENTYPE_GENTYPE(a)     ,a,
-#define M_SUBTYPE_PTR_SUBTYPE_PTR(a) ,a,
-#define M_NAME_NAME(a)           ,a,
-#define M_OPLIST_OPLIST(a)       ,a,
-#define M_SORT_SORT(a)           ,a,
-#define M_SPLICE_BACK_SPLICE_BACK(a) ,a,
-#define M_SPLICE_AT_SPLICE_AT(a) ,a,
-#define M_IT_TYPE_IT_TYPE(a)     ,a,
-#define M_IT_FIRST_IT_FIRST(a)   ,a,
-#define M_IT_LAST_IT_LAST(a)     ,a,
-#define M_IT_END_IT_END(a)       ,a,
-#define M_IT_SET_IT_SET(a)       ,a,
-#define M_IT_END_P_IT_END_P(a)   ,a,
-#define M_IT_LAST_P_IT_LAST_P(a) ,a,
-#define M_IT_EQUAL_P_IT_EQUAL_P(a) ,a,
-#define M_IT_NEXT_IT_NEXT(a)     ,a,
-#define M_IT_PREVIOUS_IT_PREVIOUS(a)     ,a,
-#define M_IT_REF_IT_REF(a)       ,a,
-#define M_IT_CREF_IT_CREF(a)     ,a,
-#define M_IT_REMOVE_IT_REMOVE(a) ,a,
-#define M_IT_INSERT_IT_INSERT(a) ,a,
-#define M_EMPTY_P_EMPTY_P(a) ,a,
-#define M_ADD_ADD(a)             ,a,
-#define M_SUB_SUB(a)             ,a,
-#define M_MUL_MUL(a)             ,a,
-#define M_DIV_DIV(a)             ,a,
-#define M_RESET_RESET(a)         ,a,
-#define M_KEY_TYPE_KEY_TYPE(a)   ,a,
-#define M_VALUE_TYPE_VALUE_TYPE(a) ,a,
-#define M_KEY_OPLIST_KEY_OPLIST(a) ,a,
-#define M_VALUE_OPLIST_VALUE_OPLIST(a) ,a,
-#define M_GET_KEY_GET_KEY(a)     ,a,
-#define M_SET_KEY_SET_KEY(a)     ,a,
-#define M_SAFE_GET_KEY_SAFE_GET_KEY(a) ,a,
-#define M_ERASE_KEY_ERASE_KEY(a) ,a,
-#define M_GET_SIZE_GET_SIZE(a)   ,a,
-#define M_PUSH_PUSH(a)           ,a,
-#define M_POP_POP(a)             ,a,
-#define M_PUSH_MOVE_PUSH_MOVE(a) ,a,
-#define M_POP_MOVE_POP_MOVE(a)   ,a,
-#define M_REVERSE_REVERSE(a)     ,a,
-#define M_GET_STR_GET_STR(a)     ,a,
-#define M_PARSE_STR_PARSE_STR(a) ,a,
-#define M_OUT_STR_OUT_STR(a)     ,a,
-#define M_IN_STR_IN_STR(a)       ,a,
-#define M_OUT_SERIAL_OUT_SERIAL(a) ,a,
-#define M_IN_SERIAL_IN_SERIAL(a) ,a,
-#define M_SEPARATOR_SEPARATOR(a) ,a,
-#define M_EXT_ALGO_EXT_ALGO(a)   ,a,
-#define M_INC_ALLOC_INC_ALLOC(a) ,a,
-#define M_OOR_SET_OOR_SET(a)     ,a,
-#define M_OOR_EQUAL_OOR_EQUAL(a) ,a,
-#define M_LIMITS_LIMITS(a)       ,a,
-#define M_PROPERTIES_PROPERTIES(a) ,a,
-#define M_EMPLACE_TYPE_EMPLACE_TYPE(a) ,a,
+#define M_X_INIT_INIT(a)           ,a,
+#define M_X_INIT_SET_INIT_SET(a)   ,a,
+#define M_X_INIT_MOVE_INIT_MOVE(a) ,a,
+#define M_X_INIT_WITH_INIT_WITH(a) ,a,
+#define M_X_SWAP_SWAP(a)           ,a,
+#define M_X_SET_SET(a)             ,a,
+#define M_X_MOVE_MOVE(a)           ,a,
+#define M_X_CLEAR_CLEAR(a)         ,a,
+#define M_X_HASH_HASH(a)           ,a,
+#define M_X_EQUAL_EQUAL(a)         ,a,
+#define M_X_CMP_CMP(a)             ,a,
+#define M_X_TYPE_TYPE(a)           ,a,
+#define M_X_SUBTYPE_SUBTYPE(a)     ,a,
+#define M_X_GENTYPE_GENTYPE(a)     ,a,
+#define M_X_SUBTYPE_PTR_SUBTYPE_PTR(a) ,a,
+#define M_X_NAME_NAME(a)           ,a,
+#define M_X_FIELD_FIELD(a)         ,a,
+#define M_X_OPLIST_OPLIST(a)       ,a,
+#define M_X_SORT_SORT(a)           ,a,
+#define M_X_SPLICE_BACK_SPLICE_BACK(a) ,a,
+#define M_X_SPLICE_AT_SPLICE_AT(a) ,a,
+#define M_X_IT_TYPE_IT_TYPE(a)     ,a,
+#define M_X_IT_FIRST_IT_FIRST(a)   ,a,
+#define M_X_IT_LAST_IT_LAST(a)     ,a,
+#define M_X_IT_END_IT_END(a)       ,a,
+#define M_X_IT_SET_IT_SET(a)       ,a,
+#define M_X_IT_END_P_IT_END_P(a)   ,a,
+#define M_X_IT_LAST_P_IT_LAST_P(a) ,a,
+#define M_X_IT_EQUAL_P_IT_EQUAL_P(a) ,a,
+#define M_X_IT_NEXT_IT_NEXT(a)     ,a,
+#define M_X_IT_PREVIOUS_IT_PREVIOUS(a)     ,a,
+#define M_X_IT_REF_IT_REF(a)       ,a,
+#define M_X_IT_CREF_IT_CREF(a)     ,a,
+#define M_X_IT_REMOVE_IT_REMOVE(a) ,a,
+#define M_X_IT_INSERT_IT_INSERT(a) ,a,
+#define M_X_EMPTY_P_EMPTY_P(a)     ,a,
+#define M_X_FULL_P_FULL_P(a)       ,a,
+#define M_X_ADD_ADD(a)             ,a,
+#define M_X_SUB_SUB(a)             ,a,
+#define M_X_MUL_MUL(a)             ,a,
+#define M_X_DIV_DIV(a)             ,a,
+#define M_X_RESET_RESET(a)         ,a,
+#define M_X_KEY_TYPE_KEY_TYPE(a)   ,a,
+#define M_X_VALUE_TYPE_VALUE_TYPE(a) ,a,
+#define M_X_KEY_OPLIST_KEY_OPLIST(a) ,a,
+#define M_X_VALUE_OPLIST_VALUE_OPLIST(a) ,a,
+#define M_X_GET_KEY_GET_KEY(a)     ,a,
+#define M_X_SET_KEY_SET_KEY(a)     ,a,
+#define M_X_SAFE_GET_KEY_SAFE_GET_KEY(a) ,a,
+#define M_X_ERASE_KEY_ERASE_KEY(a) ,a,
+#define M_X_GET_SIZE_GET_SIZE(a)   ,a,
+#define M_X_PUSH_PUSH(a)           ,a,
+#define M_X_POP_POP(a)             ,a,
+#define M_X_PUSH_MOVE_PUSH_MOVE(a) ,a,
+#define M_X_POP_MOVE_POP_MOVE(a)   ,a,
+#define M_X_REVERSE_REVERSE(a)     ,a,
+#define M_X_GET_STR_GET_STR(a)     ,a,
+#define M_X_PARSE_STR_PARSE_STR(a) ,a,
+#define M_X_OUT_STR_OUT_STR(a)     ,a,
+#define M_X_IN_STR_IN_STR(a)       ,a,
+#define M_X_OUT_SERIAL_OUT_SERIAL(a) ,a,
+#define M_X_IN_SERIAL_IN_SERIAL(a) ,a,
+#define M_X_SEPARATOR_SEPARATOR(a) ,a,
+#define M_X_EXT_ALGO_EXT_ALGO(a)   ,a,
+#define M_X_INC_ALLOC_INC_ALLOC(a) ,a,
+#define M_X_OOR_SET_OOR_SET(a)     ,a,
+#define M_X_OOR_EQUAL_OOR_EQUAL(a) ,a,
+#define M_X_LIMITS_LIMITS(a)       ,a,
+#define M_X_PROPERTIES_PROPERTIES(a) ,a,
+#define M_X_EMPLACE_TYPE_EMPLACE_TYPE(a) ,a,
 // As attribute customization
-#define M_NEW_NEW(a)             ,a,
-#define M_DEL_DEL(a)             ,a,
-#define M_REALLOC_REALLOC(a)     ,a,
-#define M_FREE_FREE(a)           ,a,
-#define M_MEMPOOL_MEMPOOL(a)     ,a,
-#define M_MEMPOOL_LINKAGE_MEMPOOL_LINKAGE(a)     ,a,
-#define M_SIZE_SIZE(a)           ,a,
-#define M_CONTEXT_CONTEXT(a)     ,a,
-#define M_POLICY_POLICY(a)       ,a,
+#define M_X_NEW_NEW(a)             ,a,
+#define M_X_DEL_DEL(a)             ,a,
+#define M_X_REALLOC_REALLOC(a)     ,a,
+#define M_X_FREE_FREE(a)           ,a,
+#define M_X_MEMPOOL_MEMPOOL(a)     ,a,
+#define M_X_MEMPOOL_LINKAGE_MEMPOOL_LINKAGE(a)     ,a,
+#define M_X_SIZE_SIZE(a)           ,a,
+#define M_X_CONTEXT_CONTEXT(a)     ,a,
+#define M_X_POLICY_POLICY(a)       ,a,
 // As properties only
-#define M_LET_AS_INIT_WITH_LET_AS_INIT_WITH(a) ,a,
-#define M_NOCLEAR_NOCLEAR(a)     ,a,
+#define M_X_LET_AS_INIT_WITH_LET_AS_INIT_WITH(a) ,a,
+#define M_X_NOCLEAR_NOCLEAR(a)     ,a,
+#define M_X_THREADSAFE_THREADSAFE(a)     ,a,
 
 /* From an oplist - an unorded list of methods : like "INIT(mpz_init),CLEAR(mpz_clear),SET(mpz_set)" -
    Return the given method in the oplist or the default method.
@@ -3424,7 +3471,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
    M_GET_METHOD(INIT, my_default, INIT(mpz_init),CLEAR(mpz_clear),SET(mpz_set)) --> mpz_init
    M_GET_METHOD(INIT, my_default, CLEAR(mpz_clear),SET(mpz_set)) --> my_default */
 #define M_GET_METHOD(method, method_default, ...)                             \
-  M_RET_ARG2 (M_MAP2B(M_C, M_C3(M_, method, _), __VA_ARGS__), method_default,)
+  M_RET_ARG2 (M_MAP2B(M_C, M_C3(M_X_, method, _), __VA_ARGS__), method_default,)
 
 /* Get the given method */
 #define M_GET_INIT(...)      M_GET_METHOD(INIT,        M_INIT_DEFAULT,     __VA_ARGS__)
@@ -3443,6 +3490,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_GET_SUBTYPE_PTR(...) M_GET_METHOD(SUBTYPE_PTR, M_NO_DEF_SUBTYPE_PTR, __VA_ARGS__)
 #define M_GET_GENTYPE(...)   M_GET_METHOD(GENTYPE,     M_NO_DEF_GENTYPE,   __VA_ARGS__)
 #define M_GET_NAME(...)      M_GET_METHOD(NAME,        M_NO_DEF_NAME,      __VA_ARGS__)
+#define M_GET_FIELD(...)     M_GET_METHOD(FIELD,       M_NO_DEF_FIELD,     __VA_ARGS__)
 #define M_GET_OPLIST(...)    M_GET_METHOD(OPLIST,      (),                 __VA_ARGS__)
 #define M_GET_SORT(...)      M_GET_METHOD(SORT,        M_NO_DEF_SORT,      __VA_ARGS__)
 #define M_GET_SPLICE_BACK(...) M_GET_METHOD(SPLICE_BACK, M_NO_DEF_SPLICE_BACK, __VA_ARGS__)
@@ -3462,6 +3510,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_GET_IT_REMOVE(...) M_GET_METHOD(IT_REMOVE,   M_NO_DEF_IT_REMOVE, __VA_ARGS__)
 #define M_GET_IT_INSERT(...) M_GET_METHOD(IT_INSERT,   M_NO_DEF_IT_INSERT, __VA_ARGS__)
 #define M_GET_EMPTY_P(...)   M_GET_METHOD(EMPTY_P,     M_NO_DEF_EMPTY_P,   __VA_ARGS__)
+#define M_GET_FULL_P(...)    M_GET_METHOD(FULL_P,      M_FALSE_DEFAULT,    __VA_ARGS__)
 #define M_GET_ADD(...)       M_GET_METHOD(ADD,         M_ADD_DEFAULT,      __VA_ARGS__)
 #define M_GET_SUB(...)       M_GET_METHOD(SUB,         M_SUB_DEFAULT,      __VA_ARGS__)
 #define M_GET_MUL(...)       M_GET_METHOD(MUL,         M_MUL_DEFAULT,      __VA_ARGS__)
@@ -3524,6 +3573,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 //#define M_CALL_SUBTYPE_PTR(oplist, ...) M_APPLY_API(M_GET_SUBTYPE_PTR oplist, oplist, __VA_ARGS__)
 //#define M_CALL_GENTYPE(oplist, ...) M_APPLY_API(M_GET_GENTYPE oplist, oplist, __VA_ARGS__)
 //#define M_CALL_NAME(oplist, ...) M_APPLY_API(M_GET_NAME oplist, oplist, __VA_ARGS__)
+//#define M_CALL_FIELD(oplist, ...) M_APPLY_API(M_GET_FIELD oplist, oplist, __VA_ARGS__)
 //#define M_CALL_OPLIST(oplist, ...) M_APPLY_API(M_GET_OPLIST oplist, oplist, __VA_ARGS__)
 #define M_CALL_SORT(oplist, ...) M_APPLY_API(M_GET_SORT oplist, oplist, __VA_ARGS__)
 #define M_CALL_SPLICE_BACK(oplist, ...) M_APPLY_API(M_GET_SPLICE_BACK oplist, oplist, __VA_ARGS__)
@@ -3543,6 +3593,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_CALL_IT_REMOVE(oplist, ...) M_APPLY_API(M_GET_IT_REMOVE oplist, oplist, __VA_ARGS__)
 #define M_CALL_IT_INSERT(oplist, ...) M_APPLY_API(M_GET_IT_INSERT oplist, oplist, __VA_ARGS__)
 #define M_CALL_EMPTY_P(oplist, ...) M_APPLY_API(M_GET_EMPTY_P oplist, oplist, __VA_ARGS__)
+#define M_CALL_FULL_P(oplist, ...) M_APPLY_API(M_GET_FULL_P oplist, oplist, __VA_ARGS__)
 #define M_CALL_ADD(oplist, ...) M_APPLY_API(M_GET_ADD oplist, oplist, __VA_ARGS__)
 #define M_CALL_SUB(oplist, ...) M_APPLY_API(M_GET_SUB oplist, oplist, __VA_ARGS__)
 #define M_CALL_MUL(oplist, ...) M_APPLY_API(M_GET_MUL oplist, oplist, __VA_ARGS__)
@@ -3888,6 +3939,7 @@ M_INLINE size_t m_core_cstr_hash(const char str[])
 #define M_NOTHING_DEFAULT(...)  ((void)(__VA_ARGS__))
 #define M_EMPTY_DEFAULT(...)    ((void)1)
 #define M_TRUE_DEFAULT(...)     true
+#define M_FALSE_DEFAULT(...)    false
 #define M_NEW_DEFAULT(a)        M_MEMORY_ALLOC(a)
 #define M_DEL_DEFAULT(a)        M_MEMORY_DEL(a)
 #define M_REALLOC_DEFAULT(t,p,s) M_MEMORY_REALLOC(t,p,s)
@@ -4775,6 +4827,16 @@ m_core_parse2_enum (const char str[], const char **endptr)
 #define M_EMPLACE_LIST_TYPE_VAR_SINGLE(prefix, emplace_type)                  \
   , emplace_type const prefix
 
+/* Expand to the list of emplace type with their variable name
+   to use in the function declaration (doesn't start with a , but slower) */
+#define M_EMPLACE_LIST_TYPE_VAR_ALTER(prefix, emplace_type)                   \
+  M_IF(M_PARENTHESIS_P( emplace_type ))(M_EMPLACE_LIST_TYPE_VAR_ALTER_MULTI, M_EMPLACE_LIST_TYPE_VAR_ALTER_SINGLE)(prefix, emplace_type)
+#define M_EMPLACE_LIST_TYPE_VAR_ALTER_MULTI(prefix, emplace_type)             \
+  M_MAP3(M_EMPLACE_LIST_TYPE_VAR_ALTER_MULTI_F, prefix, M_ID emplace_type)
+#define M_EMPLACE_LIST_TYPE_VAR_ALTER_MULTI_F(prefix, num, type)              \
+  M_IF(M_EQUAL(1, num))( /*void*/, M_DEFERRED_COMMA) type const M_C(prefix, num)
+#define M_EMPLACE_LIST_TYPE_VAR_ALTER_SINGLE(prefix, emplace_type)            \
+  emplace_type const prefix
 
 /* Expand to the list of variable name based on the the declaration with
    emplace type to use in the INIT_WITH or specific method call (start with a ,) */

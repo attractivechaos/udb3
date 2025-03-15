@@ -9,6 +9,9 @@ static inline uint64_t stc_hash_fn(const uint32_t *x)
 #define i_hash stc_hash_fn
 #include "hmap.h"
 
+// https://github.com/jamesnolanverran/dmap
+// commit a784c92, cloned on 2025-03-16
+
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {
 	uint32_t step = (N - n0) / (n_cp - 1);

@@ -1,7 +1,9 @@
 #include "../common.c"
 #define STB_DS_IMPLEMENTATION
-// version v0.67; cloned on 2024-05-05
 #include "stb_ds.h"
+
+// https://github.com/nothings/stb/blob/master/stb_ds.h
+// commit 40adb99, cloned on 2025-03-16
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {

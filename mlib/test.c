@@ -1,6 +1,9 @@
 #include "../common.c"
 #include "m-dict.h"
 
+// https://github.com/P-p-H-d/mlib
+// commit c55bb6b, cloned on 2025-03-16
+
 static inline int oor_equal_p(uint32_t k, unsigned char n)
 {
 	return (k == (uint32_t)(-n-1));

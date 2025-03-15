@@ -5,9 +5,9 @@
 #define VAL_TY uint32_t
 #define HASH_FN udb_hash_fn
 #define CMPR_FN vt_cmpr_integer
-// version 2.1.1; cloned on 2025-03-05
 #include "verstable.h"
 
+// version 2.1.1; cloned on 2025-03-05
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
 {
