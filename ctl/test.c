@@ -13,7 +13,7 @@ static inline aux aux_copy(aux *self) { return *self; }
 #define T aux
 #include "ctl/unordered_map.h"
 
-// https://github.com/ludocode/pottery
+// https://github.com/rurban/ctl
 // 741bf5f, cloned on 2025-03-17
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
