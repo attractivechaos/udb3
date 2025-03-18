@@ -1,0 +1,20 @@
+name: C/C++ CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v4
+    - name: CPU Information
+      run:  lscpu || echo "CPU information not available"
+    - name: Compiler Information
+      run:  cc -v
+    - name: make
+      run: make
+    - name: Run insert
+      run: l=$(find . -executable -type f|grep -v .git) ; for e in $l ; do echo "$e" ; timeout 1m "$e" || echo TIMEOUT; done
+    - name: Run Delete
+      run: l=$(find . -executable -type f|grep -v .git) ; for e in $l ; do echo "$e" ; timeout 1m "$e" -d || echo TIMEOUT; done
