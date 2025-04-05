@@ -11,7 +11,7 @@ typedef struct aux_s {
 
 static inline int aux_cmp(const void *a, const void *b, const void *udata)
 {
-	const aux_t *p = (const aux_t*)a, *q = (const aux_t*)q;
+	const aux_t *p = (const aux_t*)a, *q = (const aux_t*)b;
 	return ((p->key > q->key) - (p->key < q->key));
 }
 
