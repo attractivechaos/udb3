@@ -1,11 +1,10 @@
 #include "../common.c"
 #include "ee_dict.h"
 
-uint64_t key_hash_fn(const u8 *p, size_t len)
+static uint64_t key_hash_fn(const u8 *p, size_t len)
 {
-	uint32_t key = *(uint32_t*)p;
 	EE_UNUSED(len);
-	return udb_hash_fn(key);
+	return udb_hash_fn(*(uint32_t*)p);
 }
 
 void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_cp, udb_checkpoint_t *cp)
@@ -13,7 +12,7 @@ void test_int(uint32_t N, uint32_t n0, int32_t is_del, uint32_t x0, uint32_t n_c
 	uint32_t step = (N - n0) / (n_cp - 1);
 	uint32_t i, n, j;
 	uint64_t z = 0, x = x0;
-	DictConfig config = ee_dict_config_new(0, key_hash_fn, 0, 0, 0);
+	DictConfig config = ee_dict_config_new(0, key_hash_fn, ee_eq_u32, ee_cpy_u32, ee_cpy_u32);
 	Dict h = ee_dict_new_conf_m(128, uint32_t, uint32_t, config);
 	for (j = 0, i = 0, n = n0; j < n_cp; ++j, n += step) {
 		for (; i < n; ++i) {
