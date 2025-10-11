@@ -47,7 +47,8 @@ int main(int argc, char *argv[])
 	strmap_t *h = genmap(n, m);
 	printf("%d\n", kh_size(h));
 	k = strmap_get(h, "id.10000");
-	printf("%s\n", kh_val(h, k));
+	if (k != kh_end(h))
+		printf("%s\n", kh_val(h, k));
 	kh_foreach(h, k) {
 		free((char*)kh_key(h, k));
 		free((char*)kh_val(h, k));
