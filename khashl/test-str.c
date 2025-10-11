@@ -4,7 +4,13 @@
 #include <stdio.h>
 #include "khashl.h"
 
+#define CACHED
+
+#ifdef CACHED
+KHASHL_CMAP_INIT(KH_LOCAL, strmap_t, strmap, kh_cstr_t, kh_cstr_t, kh_hash_str, kh_eq_str)
+#else
 KHASHL_MAP_INIT(KH_LOCAL, strmap_t, strmap, kh_cstr_t, kh_cstr_t, kh_hash_str, kh_eq_str)
+#endif
 
 static inline int int2str(char *b, int c)
 {
